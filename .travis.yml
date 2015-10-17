@@ -1,9 +1,9 @@
 language: android
 android:
   components:
-	- build-tools-23.0.1
-	- android-23
-	- emulator -avd test -no-skin -no-audio -no-window &
-	- adb wait-for-device
+    - build-tools-23.0.1
+    - android-23
+    - emulator -avd test -no-skin -no-audio -no-window &
+    - adb wait-for-device
 
 script: ./gradlew connectedInstrumentTest
