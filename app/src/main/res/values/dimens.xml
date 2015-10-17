@@ -1,0 +1,18 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Facebook login button -->
+    <dimen name="fb_margin_override_top">40dp</dimen>
+    <dimen name="fb_margin_override_bottom">40dp</dimen>
+    <!--The next value changes the margin between the FB icon and the left border:-->
+    <dimen name="fb_margin_override_lr">10dp</dimen>
+    <!--The next value changes the margin between the FB icon and the login text:-->
+    <dimen name="fb_margin_override_textpadding">17dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+</resources>

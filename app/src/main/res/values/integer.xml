@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item format="integer" name="profile_width" type="integer">150</item>
+    <item format="integer" name="profile_height" type="integer">150</item>
+</resources>
