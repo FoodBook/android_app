@@ -4,9 +4,6 @@ import android.net.Uri;
 
 import tk.lenkyun.foodbook.foodbook.Data.Content;
 
-/**
- * Created by lenkyun on 17/10/2558.
- */
 public class ContentPhoto<E> extends Photo implements Content<E>{
     E content;
 
@@ -14,33 +11,34 @@ public class ContentPhoto<E> extends Photo implements Content<E>{
         super(referalImageURI);
     }
 
+    public static <E> ContentPhoto<E> fromPhoto(Photo photo) {
+        return new ContentPhoto<>(null, photo.getReferalImageURI());
+    }
+
+    public static <E> ContentPhoto<E> fromContent(E content) {
+        return new ContentPhoto<>(content, null);
+    }
+
+    public static <E> ContentPhoto<E> fromContent(E content, Photo photo) {
+        return new ContentPhoto<>(content, photo.getReferalImageURI());
+    }
+
+    public static <E> ContentPhoto<E> fromPhoto(Photo photo, E content) {
+        return new ContentPhoto<>(content, photo.getReferalImageURI());
+    }
+
     @Override
-    public String getContentType(){
+    public String getContentType() {
         return content.getClass().getName();
     }
 
     @Override
-    public E getContent(){
+    public E getContent() {
         return this.content;
     }
+
     @Override
-    public void setContent(E content){
+    public void setContent(E content) {
         this.content = content;
-    }
-
-    public static <E> ContentPhoto<E> fromPhoto(Photo photo){
-        return new ContentPhoto<E>(null, photo.getReferalImageURI());
-    }
-
-    public static <E> ContentPhoto<E> fromContent(E content){
-        return new ContentPhoto<E>(content, null);
-    }
-
-    public static <E> ContentPhoto<E> fromContent(E content, Photo photo){
-        return new ContentPhoto<E>(content, photo.getReferalImageURI());
-    }
-
-    public static <E> ContentPhoto<E> fromPhoto(Photo photo, E content){
-        return new ContentPhoto<E>(content, photo.getReferalImageURI());
     }
 }

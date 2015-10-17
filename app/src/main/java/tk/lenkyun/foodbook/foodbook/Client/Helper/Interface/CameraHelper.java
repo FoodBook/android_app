@@ -18,19 +18,50 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.ContentPhoto;
 
-/**
- * Created by lenkyun on 15/10/2558.
- */
 public class CameraHelper {
-    private Activity activity;
     private final int INTENT_ID = 1124;
-    private List<ObjectListener<Photo>> photoListeners = new LinkedList<>();
+    private Activity activity;
+    private List<ObjectListener<ContentPhoto>> photoListeners = new LinkedList<>();
     private Uri fileUri = null;
 
     public CameraHelper(Activity activity){
         this.activity = activity;
+    }
+
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private static Uri getOutputMediaFileUri() {
+        return Uri.fromFile(getOutputMediaFile());
+    }
+
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile() {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "FoodBook");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("FoodBook", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_" + timeStamp + ".jpg");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -56,12 +87,12 @@ public class CameraHelper {
                         // etc.
                     }
 
-                    Photo photo = new Photo(null);
-                    for(ObjectListener<Photo> photoListener : photoListeners){
+                    ContentPhoto<Bitmap> photo = new ContentPhoto(bitmap, null);
+                    for (ObjectListener<ContentPhoto> photoListener : photoListeners) {
                         photoListener.onTaken(photo, orientationD);
                     }
                 } catch (IOException e) {
-
+                    Log.e("Camera", "Loading photo error");
                 }
             }
         }
@@ -72,49 +103,17 @@ public class CameraHelper {
         matrix.postRotate(degree);
 
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(),true);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-        return rotatedBitmap;
+        return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
     }
 
-    public void registerListener(ObjectListener<Photo> photoListener){
+    public void registerListener(ObjectListener<ContentPhoto> photoListener) {
         photoListeners.add(photoListener);
     }
 
-    public void take(){
+    public void take() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri();
-        intent.putExtra( MediaStore.EXTRA_OUTPUT, fileUri );
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         activity.startActivityForResult(intent, INTENT_ID);
-    }
-
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(){
-        return Uri.fromFile(getOutputMediaFile());
-    }
-
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(){
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "FoodBook");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("FoodBook", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
-
-        return mediaFile;
     }
 }

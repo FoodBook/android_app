@@ -17,25 +17,25 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.location.places.Place;
 
-import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Data.Location;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
-import tk.lenkyun.foodbook.foodbook.Data.PostDetail;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
+import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
+import tk.lenkyun.foodbook.foodbook.Data.Location;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.ContentPhoto;
+import tk.lenkyun.foodbook.foodbook.Data.PostDetail;
 
 public class PhotoUploadActivity extends AppCompatActivity {
 
+    public static final int INTENT_ID = 100;
     private PlaceHelper placeHelper = new PlaceHelper(this);
     private Place place = null;
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = this.getApplicationContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     @Override
@@ -46,34 +46,42 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_photo_upload);
 
-        final Photo photo = (Photo) Repository.getInstance().getData("UploadPhoto");
-        Bitmap bitmapX = photo.getBitmap();
+        final ContentPhoto<Bitmap> photo;
+        try {
+            photo = (ContentPhoto<Bitmap>) Repository.getInstance().getData("UploadPhoto");
+        } catch (ClassCastException e) {
+            finish();
+            return;
+        }
+
+        if (photo == null) {
+            finish();
+            return;
+        }
+        Bitmap bitmapX = photo.getContent();
 
         float height = bitmapX.getHeight();
         float width = bitmapX.getWidth();
 
-        float ratio = 1;
-        if(width > height){
+        float ratio;
+        if (width > height) {
             ratio = 480F / height;
-        }else{
+        } else {
             ratio = 640F / width;
         }
 
-        Bitmap bmp = Bitmap.createScaledBitmap(bitmapX, (int)(bitmapX.getWidth() * ratio), (int)(bitmapX.getHeight() * ratio), false);
-        bitmapX = null;
-        photo.updateBitmap(bmp);
+        Bitmap bmp = Bitmap.createScaledBitmap(bitmapX, (int) (bitmapX.getWidth() * ratio), (int) (bitmapX.getHeight() * ratio), false);
+        photo.setContent(bmp);
 
-        if(photo != null){
-            ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
-            Bitmap bitmap = photo.getBitmap().copy(Bitmap.Config.ARGB_8888, true);
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = new Paint();
-            paint.setARGB(50, 0, 0, 0);
+        ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
+        Bitmap bitmap = photo.getContent().copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setARGB(50, 0, 0, 0);
 
-            canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
+        canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
 
-            imageView.setImageBitmap(bitmap);
-        }
+        imageView.setImageBitmap(bitmap);
 
         final TextView placeTitle = (TextView) findViewById(R.id.upload_place_title);
         final TextView placeDesc = (TextView) findViewById(R.id.upload_place_desc);

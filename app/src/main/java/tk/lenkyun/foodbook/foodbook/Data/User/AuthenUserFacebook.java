@@ -2,26 +2,20 @@ package tk.lenkyun.foodbook.foodbook.Data.User;
 
 import com.facebook.AccessToken;
 
-import tk.lenkyun.foodbook.foodbook.Data.User.AuthenUser;
-import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
-
-/**
- * Created by lenkyun on 15/10/2558.
- */
 public class AuthenUserFacebook extends AuthenUser {
-    private AccessToken fbToken;
+    private AccessToken facebookToken;
 
-    public AuthenUserFacebook(String username, AccessToken fbToken) {
+    public AuthenUserFacebook(String username, AccessToken facebookToken) {
         super(username);
     }
 
-    public AccessToken getFbToken(){
-        return fbToken;
+    public AccessToken getFacebookToken() {
+        return facebookToken;
     }
 
     @Override
     public String getAuthenticateInfo(){
-        return fbToken.getToken();
+        return facebookToken.getToken();
     }
 
     @Override
