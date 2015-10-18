@@ -12,6 +12,7 @@ public abstract class AuthenticationInfo implements FoodbookType {
         this.type = type;
     }
 
+    public abstract String getAuthenticateId();
     public abstract String getAuthenticateInfo();
 
     public abstract void setAuthenticateInfo(String authenticateInfo);

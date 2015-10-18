@@ -31,7 +31,6 @@ import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.GalleryHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
-import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.ProfileHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        PhotoContentService.initialize(getApplicationContext());
 
         uiCheckLogin();
 
@@ -214,8 +214,8 @@ public class MainActivity extends AppCompatActivity
 
         final MainActivity self = this;
 
-        ProfileHelper profileHelper = new ProfileHelper(userProfile);
-        profileHelper.getProfilePictureContent(
+        PhotoContentService.getInstance().getPhotoContent(
+                userProfile.getProfilePicture(),
                 new ContentListener<Bitmap>() {
                     @Override
                     public void onContentLoaded(Content<Bitmap> content) {
@@ -237,7 +237,8 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
-        profileHelper.getCoverPictureContent(
+        PhotoContentService.getInstance().getPhotoContent(
+                userProfile.getCoverPicture(),
                 new ContentListener<Bitmap>() {
                     @Override
                     public void onContentLoaded(Content<Bitmap> content) {
@@ -265,7 +266,9 @@ public class MainActivity extends AppCompatActivity
         );
 
         TextView userFullname = (TextView) findViewById(R.id.user_fullname);
-        userFullname.setText(userProfile.getFirstname() + "  " + userProfile.getLastname());
+        userFullname.setText(String.format(getResources().getString(R.string.profile_name_display),
+                userProfile.getFirstname(), userProfile.getLastname()
+        ));
 
         TextView userUsername = (TextView) findViewById(R.id.user_username);
         userUsername.setText(LoginService.getInstance().getUser().getUsername());
@@ -314,7 +317,11 @@ public class MainActivity extends AppCompatActivity
             final User owner = foodPost.getOwner();
             final Profile ownerProfile = owner.getProfile();
 
-            holder.profileName.setText(ownerProfile.getFirstname() + "  " + ownerProfile.getLastname());
+            holder.profileName.setText(String.format(
+                    getResources().getString(R.string.profile_name_display),
+                    ownerProfile.getFirstname(),
+                    ownerProfile.getLastname()
+            ));
             holder.caption.setText(foodPost.getPostDetail().getCaption());
 
             PhotoContentService.getInstance().getPhotoContent(
@@ -336,8 +343,8 @@ public class MainActivity extends AppCompatActivity
                     }
             );
 
-            ProfileHelper profileHelper = new ProfileHelper(ownerProfile);
-            profileHelper.getProfilePictureContent(
+            PhotoContentService.getInstance().getPhotoContent(
+                    ownerProfile.getProfilePicture(),
                     new ContentListener<Bitmap>() {
                         @Override
                         public void onContentLoaded(final Content<Bitmap> content) {

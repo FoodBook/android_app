@@ -86,7 +86,7 @@ public class GalleryHelper {
                     // etc.
                 }
 
-                PhotoContent<Bitmap> photo = new PhotoContent(bitmap, null);
+                PhotoContent<Bitmap> photo = new PhotoContent(bitmap);
                 for (ObjectListener<PhotoContent> photoListener : photoListeners) {
                     photoListener.onTaken(photo, orientationD);
                 }

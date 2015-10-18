@@ -43,6 +43,7 @@ import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.UserAuthenticationInfo;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -238,8 +239,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            AuthenticationInfo authenUser = new AuthenticationInfo(email);
-            authenUser.setAuthenticateInfo(password);
+            AuthenticationInfo authenUser = new UserAuthenticationInfo(email, password);
 
             try {
                 LoginService.getInstance().login(authenUser);

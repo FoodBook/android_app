@@ -25,7 +25,9 @@
     <string name="facebook_app_id">765111296968705</string>
     <string name="action_search">Search</string>
 
-    <string name="upload_caption">Caption...</string>
+    <string name="upload_caption">Caption…</string>
     <string name="title_activity_photo_upload">Upload</string>
     <string name="title_activity_select_map">Map</string>
+
+    <string name="profile_name_display" formatted="false">%s  %s</string>
 </resources>

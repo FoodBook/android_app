@@ -1,17 +1,22 @@
 package tk.lenkyun.foodbook.foodbook.Data.Authentication;
 
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
-
 /**
  * Created by lenkyun on 19/10/2558.
  */
 public class UserAuthenticationInfo extends AuthenticationInfo {
     public static final String AUTH_TYPE = "app/session";
     private String token;
+    private String userid;
 
-    public UserAuthenticationInfo(User user, String token) {
+    public UserAuthenticationInfo(String id, String token) {
         super(AUTH_TYPE);
         this.token = token;
+        this.userid = id;
+    }
+
+    @Override
+    public String getAuthenticateId() {
+        return userid;
     }
 
     @Override

@@ -124,7 +124,6 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
                           PostDetail postDetail = new PostDetail(caption.getText().toString(),
                                   new Location(place.getName().toString(), place.getLatLng().toString()));
-                          postDetail.addPhoto(photo);
 
                           FoodPost foodPost = new FoodPost(String.valueOf(new Object().hashCode()),
                                   postDetail,
