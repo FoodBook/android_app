@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    dexOptions {
+        preDexLibraries = false
+    }
     signingConfigs {
         foodbook {
             keyPassword 'pea999'
