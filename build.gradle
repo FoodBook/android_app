@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+project.ext.preDexLibs = !project.hasProperty('disablePreDex')
 allprojects {
     repositories {
         jcenter()
