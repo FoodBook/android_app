@@ -12,6 +12,7 @@ android:
     - extra
     - sys-img-armeabi-v7a-android-19
     - extra-android-m2repository
+    - addon-google_apis-google-19
 
   licenses:
        - 'android-sdk-license-.+'
