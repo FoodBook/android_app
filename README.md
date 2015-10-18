@@ -1,4 +1,3 @@
-# android_app
 FoodBook app
 ============
 
