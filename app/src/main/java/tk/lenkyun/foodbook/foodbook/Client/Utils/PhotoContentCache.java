@@ -22,7 +22,7 @@ public class PhotoContentCache extends ContentCache<String, Object> {
     protected Context context = null;
     protected long timeToWriteCache;
 
-    public PhotoContentCache(Context applicationContext, long timeToWriteCache, long timeToLive, long cacheCheckInterval, long maxItems) {
+    public PhotoContentCache(Context applicationContext, long timeToWriteCache, long timeToLive, long cacheCheckInterval, int maxItems) {
         super(timeToLive, cacheCheckInterval, maxItems);
 
         if (timeToWriteCache > timeToLive) {
@@ -35,6 +35,10 @@ public class PhotoContentCache extends ContentCache<String, Object> {
         if (applicationContext == null) {
             throw new NullPointerException("Application content can't be null.");
         }
+    }
+
+    public Bitmap get(PhotoItem photo) {
+        return get(photo.getReferal().getPath());
     }
 
     @Override

@@ -10,12 +10,13 @@ import java.util.ArrayList;
  * Refer from : http://crunchify.com/how-to-create-a-simple-in-memory-cache-in-java-lightweight-cache/
  */
 public class ContentCache<K, V> {
-    protected LRUMap cache = new LRUMap();
+    protected LRUMap cache;
     private long timeToLive, maxItems;
 
-    public ContentCache(long timeToLive, final long cacheCheckInterval, long maxItems) {
+    public ContentCache(long timeToLive, final long cacheCheckInterval, int maxItems) {
         this.timeToLive = timeToLive * 1000;
         this.maxItems = maxItems;
+        this.cache = new LRUMap(maxItems);
 
         if (timeToLive > 0 && cacheCheckInterval > 0) {
             Thread thread = new Thread(new Runnable() {
