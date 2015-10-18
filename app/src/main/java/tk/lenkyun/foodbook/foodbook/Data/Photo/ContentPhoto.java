@@ -9,6 +9,7 @@ public class ContentPhoto<E> extends Photo implements Content<E>{
 
     public ContentPhoto(E content, Uri referalImageURI) {
         super(referalImageURI);
+        this.content = content;
     }
 
     public static <E> ContentPhoto<E> fromPhoto(Photo photo) {
