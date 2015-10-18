@@ -1,20 +1,23 @@
 package tk.lenkyun.foodbook.foodbook.Data.User;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
+import tk.lenkyun.foodbook.foodbook.Data.FoodbookType;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
-public class Profile {
+public class Profile implements FoodbookType {
     private String firstname = null, lastname = null;
-    private Photo profilePicture = null;
-    private Photo coverPicture = null;
+    private PhotoItem profilePicture = null;
+    private PhotoItem coverPicture = null;
 
-    public Profile(){};
-    public Profile(String firstname, String lastname, Photo photo){
+    public Profile() {
+    }
+
+    public Profile(String firstname, String lastname, PhotoItem photoItem) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.profilePicture = photo;
+        this.profilePicture = photoItem;
     }
 
     public String getFirstname() {
@@ -33,19 +36,19 @@ public class Profile {
         this.lastname = lastname;
     }
 
-    public Photo getProfilePicture() {
+    public PhotoItem getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(Photo profilePicture) {
+    public void setProfilePicture(PhotoItem profilePicture) {
         this.profilePicture = profilePicture;
     }
 
-    public Photo getCoverPicture() {
+    public PhotoItem getCoverPicture() {
         return coverPicture;
     }
 
-    public void setCoverPicture(Photo coverPicture) {
+    public void setCoverPicture(PhotoItem coverPicture) {
         this.coverPicture = coverPicture;
     }
 }

@@ -12,18 +12,38 @@ import com.facebook.login.LoginManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.DataListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
-import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
-import tk.lenkyun.foodbook.foodbook.Data.User.AuthenUser;
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
+import tk.lenkyun.foodbook.foodbook.Data.User.User;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
 public class FacebookHelper {
+    private static FacebookHelper instance = null;
+    private static Object lock = new Object();
+
+    /**
+     * Get service instance if not exists
+     *
+     * @return A service instance
+     */
+    public static FacebookHelper getInstance() {
+        if (instance == null) {
+            synchronized (lock) {
+                if (instance == null) {
+                    instance = new FacebookHelper();
+                }
+            }
+        }
+
+        return instance;
+    }
+
     public User login(){
         // TODO : Implement real
         if(AccessToken.getCurrentAccessToken() == null){
@@ -34,7 +54,7 @@ public class FacebookHelper {
         Profile profile = getFBProfile();
 
         if(profile != null) {
-            AuthenUser authenUser = new AuthenUser(DebugInfo.USERNAME);
+            AuthenticationInfo authenUser = new AuthenticationInfo(DebugInfo.USERNAME);
             authenUser.setAuthenticateInfo(DebugInfo.PASSWORD);
 
             // Dummy login
@@ -51,13 +71,13 @@ public class FacebookHelper {
         LoginService.getInstance().logout();
     }
 
-    public boolean getCoverPicture(final DataListener<Photo> result){
+    public boolean getCoverPicture(final DataListener<PhotoItem> result){
         if(!validateLogin()){
             result.onFailed("No login");
             return false;
         }
 
-        final Photo photo = new Photo(null);
+        final PhotoItem photoItem = new PhotoItem(null);
         final GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback(){
@@ -65,8 +85,8 @@ public class FacebookHelper {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
                             JSONObject cover = object.getJSONObject("cover");
-                            photo.setReferalImageURI(Uri.parse(cover.getString("source")));
-                            result.onLoaded(photo);
+                            photoItem.setReferal(Uri.parse(cover.getString("source")));
+                            result.onLoaded(photoItem);
                         } catch (JSONException e){ }
                     }
                 }
@@ -91,33 +111,14 @@ public class FacebookHelper {
 
         if(fbProfile != null) {
             Profile profile = new Profile(fbProfile.getFirstName(),
-                    fbProfile.getLastName(), new Photo(fbProfile.getProfilePictureUri(300, 300)));
+                    fbProfile.getLastName(), new PhotoItem(fbProfile.getProfilePictureUri(300, 300)));
             return profile;
         }else{
             return null;
         }
     }
 
-    private static FacebookHelper instance = null;
-    private static Object lock = new Object();
-
     public boolean validateLogin(){
         return AccessToken.getCurrentAccessToken() != null;
-    }
-
-    /**
-     * Get service instance if not exists
-     * @return A service instance
-     */
-    public static FacebookHelper getInstance(){
-        if(instance == null){
-            synchronized (lock){
-                if(instance == null){
-                    instance = new FacebookHelper();
-                }
-            }
-        }
-
-        return instance;
     }
 }

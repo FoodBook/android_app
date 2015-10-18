@@ -18,12 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.ContentPhoto;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
 
 public class CameraHelper {
     private final int INTENT_ID = 1124;
     private Activity activity;
-    private List<ObjectListener<ContentPhoto>> photoListeners = new LinkedList<>();
+    private List<ObjectListener<PhotoContent>> photoListeners = new LinkedList<>();
     private Uri fileUri = null;
 
     public CameraHelper(Activity activity){
@@ -87,8 +87,8 @@ public class CameraHelper {
                         // etc.
                     }
 
-                    ContentPhoto<Bitmap> photo = new ContentPhoto(bitmap, null);
-                    for (ObjectListener<ContentPhoto> photoListener : photoListeners) {
+                    PhotoContent<Bitmap> photo = new PhotoContent(bitmap, null);
+                    for (ObjectListener<PhotoContent> photoListener : photoListeners) {
                         photoListener.onTaken(photo, orientationD);
                     }
                 } catch (IOException e) {
@@ -106,7 +106,7 @@ public class CameraHelper {
         return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
     }
 
-    public void registerListener(ObjectListener<ContentPhoto> photoListener) {
+    public void registerListener(ObjectListener<PhotoContent> photoListener) {
         photoListeners.add(photoListener);
     }
 

@@ -32,15 +32,15 @@ import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListe
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.ProfileHelper;
-import tk.lenkyun.foodbook.foodbook.Client.Service.ContentService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
+import tk.lenkyun.foodbook.foodbook.Client.Service.PhotoContentService;
 import tk.lenkyun.foodbook.foodbook.Data.Content;
 import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Data.NewsFeed;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.ContentPhoto;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Data.User.User;
 
@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity
 
         cameraHelper = new CameraHelper(this);
         galleryHelper = new GalleryHelper(this);
-        final ObjectListener<ContentPhoto> photoListener = new ObjectListener<ContentPhoto>() {
+        final ObjectListener<PhotoContent> photoListener = new ObjectListener<PhotoContent>() {
             @Override
-            public void onTaken(ContentPhoto object, int extra) {
+            public void onTaken(PhotoContent object, int extra) {
                 Repository.getInstance().setData("UploadPhoto", object);
                 Intent intent = new Intent(MainActivity.this, PhotoUploadActivity.class);
                 intent.putExtra("orientation", extra);
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity
         final ImageView profile = (ImageView) findViewById(R.id.profile_picture);
         final LinearLayout profileCover = (LinearLayout) findViewById(R.id.cover_layout);
         final Profile userProfile = LoginService.getInstance().getUser().getProfile();
-        final Photo profilePicture = userProfile.getProfilePicture();
+        final PhotoItem profilePicture = userProfile.getProfilePicture();
 
         final MainActivity self = this;
 
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity
             holder.profileName.setText(ownerProfile.getFirstname() + "  " + ownerProfile.getLastname());
             holder.caption.setText(foodPost.getPostDetail().getCaption());
 
-            ContentService.getInstance().getBitmap(
+            PhotoContentService.getInstance().getPhotoContent(
                     foodPost.getPostDetail().getPhoto(0),
                     new ContentListener<Bitmap>() {
                         @Override

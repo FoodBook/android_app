@@ -2,26 +2,46 @@ package tk.lenkyun.foodbook.foodbook.Client.Service;
 
 import android.net.Uri;
 
+import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.AlreadyLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
-import tk.lenkyun.foodbook.foodbook.Data.User.AuthenUser;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
-import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
-import tk.lenkyun.foodbook.foodbook.Data.User.*;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.SessionAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
+import tk.lenkyun.foodbook.foodbook.Data.User.User;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
 public class LoginService {
-    private UserSession userSession = null;
+    private static LoginService instance = null;
+    private static Object lock = new Object();
+    private SessionAuthenticationInfo userSession = null;
+
+    /**
+     * Get service instance if not exists
+     * @return A service instance
+     */
+    public static LoginService getInstance() {
+        if (instance == null) {
+            synchronized (lock) {
+                if (instance == null) {
+                    instance = new LoginService();
+                }
+            }
+        }
+
+        return instance;
+    }
 
     /**
      * Create new session with provided user authentication
      * @param user User authentication info
      * @return Authenticated User Info
      */
-    public synchronized User login(AuthenUser user){
+    public synchronized User login(AuthenticationInfo user) {
         // TODO : Implement real
         // Dummy
         return createDummyUserSession(user);
@@ -41,7 +61,7 @@ public class LoginService {
         }
 
         if(userSession.getToken().equals(DebugInfo.TOKEN)){
-            AuthenUser authenUser = new AuthenUser(DebugInfo.USERNAME);
+            AuthenticationInfo authenUser = new AuthenticationInfo(DebugInfo.USERNAME);
             authenUser.setAuthenticateInfo(DebugInfo.PASSWORD);
             userSession = null;
 
@@ -53,7 +73,7 @@ public class LoginService {
      * Tell loginService to use existing session
      * @param session current session (no User required)
      */
-    public synchronized void updateSession(UserSession session){
+    public synchronized void updateSession(SessionAuthenticationInfo session) {
         // TODO : implement real
         if(userSession.getUser().equals(DebugInfo.USERNAME) &&
                 userSession.getToken().equals(DebugInfo.TOKEN)){
@@ -83,48 +103,26 @@ public class LoginService {
     }
 
     public boolean validateCurrentSession(){
-        if(userSession == null){
-            return false;
-        }
+        return userSession != null;
 
-        return true;
     }
 
     /* DEBUG */
-    private User createDummyUserSession(AuthenUser user){
+    private User createDummyUserSession(AuthenticationInfo user) {
         if(userSession != null){
             throw new AlreadyLoginException();
         }else if(user.getUsername().equals(DebugInfo.USERNAME) && user.getAuthenticateInfo().equals(DebugInfo.PASSWORD)){
             Profile profile = user.getProfile();
             if(profile == null) {
-                Photo photo = new Photo(Uri.parse(DebugInfo.PHOTO_URI));
-                profile = new Profile(DebugInfo.FIRSTNAME, DebugInfo.LASTNAME, photo);
+                PhotoItem photoItem = new PhotoItem(Uri.parse(DebugInfo.PHOTO_URI));
+                profile = new Profile(DebugInfo.FIRSTNAME, DebugInfo.LASTNAME, photoItem);
             }
 
             User userI = new User("0", DebugInfo.USERNAME, profile);
-            this.userSession = new UserSession(userI, DebugInfo.TOKEN);
+            this.userSession = new SessionAuthenticationInfo(userI, DebugInfo.TOKEN);
             return this.userSession.getUser();
         }else{
             throw new InvalidUserInfoException();
         }
-    }
-
-    private static LoginService instance = null;
-    private static Object lock = new Object();
-
-    /**
-     * Get service instance if not exists
-     * @return A service instance
-     */
-    public static LoginService getInstance(){
-        if(instance == null){
-            synchronized (lock){
-                if(instance == null){
-                    instance = new LoginService();
-                }
-            }
-        }
-
-        return instance;
     }
 }

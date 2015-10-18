@@ -24,7 +24,7 @@ import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
 import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Data.Location;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.ContentPhoto;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Data.PostDetail;
 
 public class PhotoUploadActivity extends AppCompatActivity {
@@ -46,9 +46,9 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_photo_upload);
 
-        final ContentPhoto<Bitmap> photo;
+        final PhotoContent<Bitmap> photo;
         try {
-            photo = (ContentPhoto<Bitmap>) Repository.getInstance().getData("UploadPhoto");
+            photo = (PhotoContent<Bitmap>) Repository.getInstance().getData("UploadPhoto");
         } catch (ClassCastException e) {
             finish();
             return;

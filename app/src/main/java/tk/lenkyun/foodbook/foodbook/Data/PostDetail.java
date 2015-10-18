@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
+import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -13,23 +13,23 @@ public class PostDetail {
     private Date createdDate = null;
     private List<Tag> tagList = new LinkedList<>();
     private Location location;
-    private List<Photo> photos = new LinkedList<Photo>();
+    private List<PhotoItem> photoItems = new LinkedList<PhotoItem>();
     private String caption;
 
     public PostDetail(String caption, Location location){
         this.location = location;
     }
 
-    public void addPhoto(Photo photo){
-        photos.add(photo);
+    public void addPhoto(PhotoItem photoItem) {
+        photoItems.add(photoItem);
     }
 
     public int countPhoto(){
-        return photos.size();
+        return photoItems.size();
     }
 
-    public Photo getPhoto(int index){
-        return photos.get(index);
+    public PhotoItem getPhoto(int index) {
+        return photoItems.get(index);
     }
 
     public int countTag(){

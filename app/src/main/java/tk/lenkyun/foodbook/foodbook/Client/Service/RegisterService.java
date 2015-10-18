@@ -1,23 +1,13 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
-import tk.lenkyun.foodbook.foodbook.Data.User.AuthenUserFacebook;
-import tk.lenkyun.foodbook.foodbook.Data.User.AuthenUser;
-import tk.lenkyun.foodbook.foodbook.Data.User.UserSession;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.FacebookAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Data.Authentication.SessionAuthenticationInfo;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
 public class RegisterService {
-
-    public UserSession register(AuthenUser authenUser){
-        // TODO : Implement real
-        return null;
-    }
-
-    public UserSession registerFacebook(AuthenUserFacebook authenUser){
-        // TODO : Implement real
-        return null;
-    }
 
     private static RegisterService instance = null;
     private static Object lock = new Object();
@@ -36,6 +26,16 @@ public class RegisterService {
         }
 
         return instance;
+    }
+
+    public SessionAuthenticationInfo register(AuthenticationInfo authenUser) {
+        // TODO : Implement real
+        return null;
+    }
+
+    public SessionAuthenticationInfo registerFacebook(FacebookAuthenticationInfo authenUser) {
+        // TODO : Implement real
+        return null;
     }
 
 }
