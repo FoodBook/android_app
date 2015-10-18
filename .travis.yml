@@ -5,6 +5,8 @@ android:
     - android-23
     - emulator -avd test -no-skin -no-audio -no-window &
     - adb wait-for-device
-    - chmod +x gradlew
+
+before_install:
+  - chmod +x gradlew
 
 script: ./gradlew connectedInstrumentTest
