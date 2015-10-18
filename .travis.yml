@@ -9,7 +9,6 @@ android:
     - tools
     - build-tools-23.0.1
     - android-23
-    - extra
     - sys-img-armeabi-v7a-android-19
     - extra-android-m2repository
     - addon-google_apis-google-19
