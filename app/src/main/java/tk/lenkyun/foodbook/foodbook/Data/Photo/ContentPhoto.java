@@ -24,7 +24,10 @@ public class ContentPhoto<E> extends Photo implements Content<E>{
     }
 
     public static <E> ContentPhoto<E> fromPhoto(Photo photo, E content) {
-        return new ContentPhoto<>(content, photo.getReferalImageURI());
+        Uri refer = null;
+        if (photo != null)
+            refer = photo.getReferalImageURI();
+        return new ContentPhoto<>(content, refer);
     }
 
     @Override
