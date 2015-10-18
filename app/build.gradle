@@ -6,7 +6,7 @@ android {
             keyPassword 'pea999'
             storePassword 'pea999'
             keyAlias 'foodbook'
-            storeFile file('D:/keys/foodbook/data.keystore')
+            storeFile file('data.keystore')
         }
     }
     compileSdkVersion 23
@@ -33,6 +33,9 @@ android {
 }
 
 repositories { mavenCentral() }
+
+
+
 
 
 
