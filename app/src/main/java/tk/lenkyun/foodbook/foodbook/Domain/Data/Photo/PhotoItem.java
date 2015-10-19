@@ -1,14 +1,14 @@
-package tk.lenkyun.foodbook.foodbook.Data.Photo;
+package tk.lenkyun.foodbook.foodbook.Domain.Data.Photo;
 
 import android.net.Uri;
 
-import tk.lenkyun.foodbook.foodbook.Data.FoodbookType;
-import tk.lenkyun.foodbook.foodbook.Data.Referal;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Referal;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
-public abstract class PhotoItem implements FoodbookType, Referal {
+public class PhotoItem implements FoodbookType, Referal {
     private Uri referalImageURI;
     private int width, height;
 

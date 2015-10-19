@@ -1,7 +1,7 @@
-package tk.lenkyun.foodbook.foodbook.Data.Photo;
+package tk.lenkyun.foodbook.foodbook.Domain.Data.Photo;
 
-import tk.lenkyun.foodbook.foodbook.Data.Content;
-import tk.lenkyun.foodbook.foodbook.Data.FoodbookType;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Content;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
 
 public class PhotoContent<E> implements FoodbookType, Content<E> {
     E content;

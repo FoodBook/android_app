@@ -42,8 +42,8 @@ import java.util.List;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.UserAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
 
 import static android.Manifest.permission.READ_CONTACTS;
 

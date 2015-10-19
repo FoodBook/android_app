@@ -6,11 +6,11 @@ import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.AlreadyLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.SessionAuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
-import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.SessionAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 /**
  * Created by lenkyun on 15/10/2558.

@@ -5,10 +5,15 @@ import android.graphics.Bitmap;
 import java.util.HashMap;
 import java.util.Map;
 
-import tk.lenkyun.foodbook.foodbook.Client.Data.PhotoBundle;
-import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Data.NewsFeed;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Operation.FoodPostBuilder;
+import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -36,8 +41,24 @@ public class NewsFeedService {
         return instance;
     }
 
-    public void publishFoodPost(FoodPost foodPost, PhotoBundle bundle) {
+    public void publishFoodPost(String caption, Location location, PhotoBundle bundle) {
         // TODO : Implement real
+        if (!LoginService.getInstance().validateCurrentSession()) {
+            throw new NoLoginException();
+        }
+
+        FoodPostBuilder foodPostBuilder = new FoodPostBuilder(caption, location, bundle, LoginService.getInstance().getUser());
+
+        // mock server
+        FoodPostDetail detail = new FoodPostDetail(foodPostBuilder.getCaption(), foodPostBuilder.getLocation());
+
+        PhotoItem c;
+        for (PhotoContent<Bitmap> photoContent : foodPostBuilder.getBundle()) {
+            c = PhotoContentService.getInstance().mockAddPhoto(photoContent);
+            detail.addPhoto(c);
+        }
+
+        FoodPost foodPost = new FoodPost(String.valueOf(dummyInt), detail, foodPostBuilder.getOwner());
         foodPost.setId(String.valueOf(dummyInt));
         for (PhotoContent<Bitmap> photoContent : bundle) {
 

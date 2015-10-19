@@ -1,22 +1,22 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 16/10/2558.
  */
-public class PostDetail {
+public class FoodPostDetail {
     private Date createdDate = null;
     private List<Tag> tagList = new LinkedList<>();
     private Location location;
     private List<PhotoItem> photoItems = new LinkedList<PhotoItem>();
     private String caption;
 
-    public PostDetail(String caption, Location location){
+    public FoodPostDetail(String caption, Location location) {
         this.location = location;
     }
 

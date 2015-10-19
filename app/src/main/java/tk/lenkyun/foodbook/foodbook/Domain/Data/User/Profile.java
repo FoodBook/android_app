@@ -1,7 +1,7 @@
-package tk.lenkyun.foodbook.foodbook.Data.User;
+package tk.lenkyun.foodbook.foodbook.Domain.Data.User;
 
-import tk.lenkyun.foodbook.foodbook.Data.FoodbookType;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 15/10/2558.

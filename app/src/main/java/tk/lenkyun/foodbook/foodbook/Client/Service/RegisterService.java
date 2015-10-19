@@ -1,8 +1,8 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.FacebookAuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.SessionAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.FacebookAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.SessionAuthenticationInfo;
 
 /**
  * Created by lenkyun on 15/10/2558.

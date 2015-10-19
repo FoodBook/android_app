@@ -1,6 +1,6 @@
-package tk.lenkyun.foodbook.foodbook.Client.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Operation;
 
-import tk.lenkyun.foodbook.foodbook.Data.FoodbookType;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
 
 /**
  * Created by lenkyun on 19/10/2558.

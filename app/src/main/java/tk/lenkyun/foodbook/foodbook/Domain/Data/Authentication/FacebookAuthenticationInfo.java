@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Data.Authentication;
+package tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication;
 
 import com.facebook.AccessToken;
 

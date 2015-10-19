@@ -1,9 +1,9 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -11,11 +11,11 @@ import tk.lenkyun.foodbook.foodbook.Data.User.User;
 public class FoodPost {
     private String id;
     private List<Comment> commentList = new LinkedList<>();
-    private PostDetail postDetail;
+    private FoodPostDetail postDetail;
     private int commentCount = 0;
     private User owner;
 
-    public FoodPost(String id, PostDetail postDetail, User owner){
+    public FoodPost(String id, FoodPostDetail postDetail, User owner) {
         this.id = id;
         this.postDetail = postDetail;
         this.owner = owner;
@@ -55,7 +55,7 @@ public class FoodPost {
         return owner;
     }
 
-    public PostDetail getPostDetail() {
+    public FoodPostDetail getPostDetail() {
         return postDetail;
     }
 }

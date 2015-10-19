@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 19/10/2558.

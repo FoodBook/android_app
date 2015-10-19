@@ -15,10 +15,10 @@ import org.json.JSONObject;
 import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.DataListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Data.Authentication.AuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
-import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 /**
  * Created by lenkyun on 15/10/2558.

@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +10,10 @@ public class NewsFeed {
     private String sessionId;
     private List<FoodPost> foodPostList = new LinkedList<>();
 
+    public NewsFeed(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     public int countFoodPost(){
         return foodPostList.size();
     }
@@ -20,10 +24,6 @@ public class NewsFeed {
 
     public void addFoodPost(FoodPost post){
         foodPostList.add(post);
-    }
-
-    public NewsFeed(String sessionId){
-        this.sessionId = sessionId;
     }
 
     public String getSessionId() {

@@ -22,10 +22,10 @@ import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
-import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Data.Location;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
-import tk.lenkyun.foodbook.foodbook.Data.PostDetail;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 
 public class PhotoUploadActivity extends AppCompatActivity {
 
@@ -122,7 +122,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
                               return;
                           }
 
-                          PostDetail postDetail = new PostDetail(caption.getText().toString(),
+                          FoodPostDetail postDetail = new FoodPostDetail(caption.getText().toString(),
                                   new Location(place.getName().toString(), place.getLatLng().toString()));
 
                           FoodPost foodPost = new FoodPost(String.valueOf(new Object().hashCode()),

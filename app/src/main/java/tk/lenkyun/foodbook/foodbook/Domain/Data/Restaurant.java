@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 /**
  * Created by lenkyun on 16/10/2558.

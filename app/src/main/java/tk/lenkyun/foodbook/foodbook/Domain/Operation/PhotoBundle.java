@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Client.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Operation;
 
 import android.graphics.Bitmap;
 
@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 
 /**
  * Created by lenkyun on 19/10/2558.

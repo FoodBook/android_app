@@ -35,13 +35,13 @@ import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PhotoContentService;
-import tk.lenkyun.foodbook.foodbook.Data.Content;
-import tk.lenkyun.foodbook.foodbook.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Data.NewsFeed;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoItem;
-import tk.lenkyun.foodbook.foodbook.Data.User.Profile;
-import tk.lenkyun.foodbook.foodbook.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Content;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 
 public class CameraHelper {
     private final int INTENT_ID = 1124;

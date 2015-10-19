@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 import android.net.Uri;
 

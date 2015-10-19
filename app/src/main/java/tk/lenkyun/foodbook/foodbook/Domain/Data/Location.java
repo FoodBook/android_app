@@ -1,4 +1,4 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -17,14 +17,14 @@ public class Location {
         this.restaurant = restaurant;
     }
 
-    public void setRestaurant(Restaurant restaurant){
-        // TODO : Implement real
-        this.restaurant = restaurant;
-    }
-
-    public Restaurant getRestaurant(){
+    public Restaurant getRestaurant() {
         // TODO : Implement real
         return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        // TODO : Implement real
+        this.restaurant = restaurant;
     }
 
     public String getCoordinate() {
