@@ -15,4 +15,6 @@
     <!--The next value changes the margin between the FB icon and the login text:-->
     <dimen name="fb_margin_override_textpadding">17dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="feedcard_padding">16dp</dimen>
 </resources>

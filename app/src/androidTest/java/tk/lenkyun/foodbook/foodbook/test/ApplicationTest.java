@@ -32,5 +32,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         // Crate Debug User
         UserAuthenticationInfo uInfo = new UserAuthenticationInfo(DebugInfo.USERNAME, DebugInfo.PASSWORD);
         LoginService.getInstance().login(uInfo);
+
+        assertNotNull(LoginService.getInstance().getUser());
     }
 }

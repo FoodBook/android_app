@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -122,17 +123,19 @@ public class PhotoUploadActivity extends AppCompatActivity {
     }
 
     private void setPhotoViewRatio(int rotation, float ratio) {
-        ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
+        LinearLayout imageView = (LinearLayout) findViewById(R.id.upload_imageview_layout);
+        float padding = getResources().getDimension(R.dimen.activity_horizontal_margin);
+        float width = getWindowManager().getDefaultDisplay().getWidth() - padding;
 
         if (ratio > MAX_PHOTO_RATIO)
             ratio = MAX_PHOTO_RATIO;
 
         switch (rotation) {
             case PORTRAIT:
-                imageView.getLayoutParams().height = (int) (imageView.getLayoutParams().width * ratio);
+                imageView.getLayoutParams().height = (int) (width * ratio);
                 break;
             case LANDSCAPE:
-                imageView.getLayoutParams().height = (int) (imageView.getLayoutParams().width * (1f / ratio));
+                imageView.getLayoutParams().height = (int) (width * (1f / ratio));
                 break;
         }
     }
@@ -192,8 +195,15 @@ public class PhotoUploadActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initRatio() {
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
         setPhotoViewRatio(mRotation, mRatio);
+    }
+
+    private void initRatio() {
+//        setPhotoViewRatio(mRotation, mRatio);
 //        ViewTreeObserver vto = imageView.getViewTreeObserver();
 //        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener(){
 //            @Override

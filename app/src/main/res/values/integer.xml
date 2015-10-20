@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item format="integer" name="profile_width" type="integer">150</item>
-    <item format="integer" name="profile_height" type="integer">150</item>
+    <item name="profile_width" format="integer" type="integer">150</item>
+    <item name="profile_height" format="integer" type="integer">150</item>
+    <item name="card_padding" format="integer" type="integer">16</item>
 </resources>
