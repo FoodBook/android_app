@@ -1,7 +1,5 @@
 package tk.lenkyun.foodbook.foodbook.Domain.Operation;
 
-import android.graphics.Bitmap;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,8 +9,8 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 /**
  * Created by lenkyun on 19/10/2558.
  */
-public class PhotoBundle implements Bundle<PhotoContent<Bitmap>> {
-    private List<PhotoContent<Bitmap>> photoContentList = new LinkedList<>();
+public class PhotoBundle implements Bundle<PhotoContent> {
+    private List<PhotoContent> photoContentList = new LinkedList<>();
 
     public PhotoBundle(PhotoContent... photos) {
         for (PhotoContent photo : photos) {
@@ -21,12 +19,12 @@ public class PhotoBundle implements Bundle<PhotoContent<Bitmap>> {
     }
 
     @Override
-    public PhotoContent<Bitmap> get(int index) {
+    public PhotoContent get(int index) {
         return photoContentList.get(index);
     }
 
     @Override
-    public void put(PhotoContent<Bitmap> content) {
+    public void put(PhotoContent content) {
         photoContentList.add(content);
     }
 
@@ -41,7 +39,7 @@ public class PhotoBundle implements Bundle<PhotoContent<Bitmap>> {
     }
 
     @Override
-    public Iterator<PhotoContent<Bitmap>> iterator() {
+    public Iterator<PhotoContent> iterator() {
         return photoContentList.iterator();
     }
 }

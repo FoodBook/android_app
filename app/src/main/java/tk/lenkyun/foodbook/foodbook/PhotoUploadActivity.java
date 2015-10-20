@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,69 +15,86 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.location.places.Place;
 
+import java.io.IOException;
+
+import tk.lenkyun.foodbook.foodbook.Client.Data.Photo.PhotoItemParcelable;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
-import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.RequestException;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PostFeedService;
+import tk.lenkyun.foodbook.foodbook.Client.Utils.PhotoUtils;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
 
 public class PhotoUploadActivity extends AppCompatActivity {
 
     public static final int INTENT_ID = 100;
-    private PlaceHelper placeHelper = new PlaceHelper(this);
+    public static final int PORTRAIT = 0, LANDSCAPE = 1;
+    public static final float MAX_PHOTO_RATIO = 2f;
     private Place place = null;
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = this.getApplicationContext().getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
+    private PlaceHelper placeHelper = new PlaceHelper(this);
+    private Bitmap mBitmap;
+    private float mRatio = 1;
+    private int mRotation = LANDSCAPE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setTheme(R.style.AppTheme);
-
         setContentView(R.layout.activity_photo_upload);
 
-        PhotoContent<Bitmap> photo;
-        try {
-            photo = (PhotoContent<Bitmap>) Repository.getInstance().getData("UploadPhoto");
-        } catch (ClassCastException e) {
+        if (initPhotoView() == false) {
             finish();
             return;
         }
 
-        if (photo == null) {
-            finish();
-            return;
-        }
-        final Bitmap bitmapX = photo.getContent();
+        initPlacePicker();
+    }
 
-        float height = bitmapX.getHeight();
-        float width = bitmapX.getWidth();
+    private void initSumbit() {
+        final EditText caption = (EditText) findViewById(R.id.upload_caption);
 
-        float ratio;
-        if (width > height) {
-            ratio = 480F / height;
-        } else {
-            ratio = 640F / width;
-        }
+        FloatingActionButton submit = (FloatingActionButton) findViewById(R.id.upload_submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (place == null) {
+                            onPublishError("Please enter location");
+                            return;
+                        }
 
-        Bitmap bmp = Bitmap.createScaledBitmap(bitmapX, (int) (bitmapX.getWidth() * ratio), (int) (bitmapX.getHeight() * ratio), false);
+                        PhotoBundle photoBundle = new PhotoBundle(
+                                new PhotoContent(mBitmap)
+                        );
 
-        ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
-        final Bitmap bitmap = bmp;
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setARGB(50, 0, 0, 0);
+                        PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
+                                new Location(place.getName().toString(), place.getLatLng().toString()),
+                                photoBundle, new RequestListener<FoodPost>() {
+                                    @Override
+                                    public void onComplete(FoodPost result) {
+                                        finish();
+                                    }
 
-        canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
+                                    @Override
+                                    public void onFailed(final RequestException e) {
+                                        onPublishError(e.getMessage());
+                                    }
+                                });
+                    }
+                });
+            }
+        });
+    }
 
-        imageView.setImageBitmap(bitmap);
-
+    private void initPlacePicker() {
         final TextView placeTitle = (TextView) findViewById(R.id.upload_place_title);
         final TextView placeDesc = (TextView) findViewById(R.id.upload_place_desc);
 
@@ -103,32 +119,97 @@ public class PhotoUploadActivity extends AppCompatActivity {
                 placeHelper.pick();
             }
         });
+    }
 
-        final EditText caption = (EditText) findViewById(R.id.upload_caption);
+    private void setPhotoViewRatio(int rotation, float ratio) {
+        ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
 
-        FloatingActionButton submit = (FloatingActionButton) findViewById(R.id.upload_submit);
-        submit.setOnClickListener(new View.OnClickListener() {
+        if (ratio > MAX_PHOTO_RATIO)
+            ratio = MAX_PHOTO_RATIO;
+
+        switch (rotation) {
+            case PORTRAIT:
+                imageView.getLayoutParams().height = (int) (imageView.getLayoutParams().width * ratio);
+                break;
+            case LANDSCAPE:
+                imageView.getLayoutParams().height = (int) (imageView.getLayoutParams().width * (1f / ratio));
+                break;
+        }
+    }
+
+    private boolean initPhotoView() {
+        PhotoItem photo;
+        try {
+            photo = (PhotoItemParcelable) getIntent().getExtras().getParcelable("photo");
+        } catch (ClassCastException e) {
+            return false;
+        }
+
+        if (photo == null) {
+            return false;
+        }
+
+        Bitmap bitmapX;
+        try {
+            bitmapX = PhotoUtils.readBitmap(this, photo).getContent();
+        } catch (IOException e) {
+            return false;
+        }
+
+        float height = bitmapX.getHeight(),
+                width = bitmapX.getWidth();
+
+        if (width > height) {
+            mRatio = 480F / height;
+            mRotation = LANDSCAPE;
+        } else {
+            mRatio = 640F / width;
+            mRotation = PORTRAIT;
+        }
+
+        bitmapX = Bitmap.createScaledBitmap(bitmapX,
+                (int) (bitmapX.getWidth() * mRatio),
+                (int) (bitmapX.getHeight() * mRatio), false);
+        bitmapX = bitmapX.copy(bitmapX.getConfig(), true);
+
+        if (mRotation == LANDSCAPE) {
+            mRatio = width / height;
+        } else {
+            mRatio = height / width;
+        }
+
+        Paint paint = new Paint();
+        paint.setARGB(50, 0, 0, 0);
+
+        Canvas canvas = new Canvas(bitmapX);
+        canvas.drawRect(0, 0, bitmapX.getWidth(), bitmapX.getHeight(), paint);
+
+        ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
+        imageView.setImageBitmap(bitmapX);
+
+        initRatio();
+        mBitmap = bitmapX;
+        return true;
+    }
+
+    private void initRatio() {
+        setPhotoViewRatio(mRotation, mRatio);
+//        ViewTreeObserver vto = imageView.getViewTreeObserver();
+//        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener(){
+//            @Override
+//            public boolean onPreDraw() {
+//                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+//                setPhotoViewRatio(mRotation, mRatio);
+//                return true;
+//            }
+//        });
+    }
+
+    private void onPublishError(String text) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                runOnUiThread(new Runnable() {
-                      @Override
-                      public void run() {
-                          if(place == null){
-                              caption.setError("Please enter location");
-                              return;
-                          }
+            public void run() {
 
-                          PhotoBundle photoBundle = new PhotoBundle(
-                                  new PhotoContent<Bitmap>(bitmap)
-                          );
-
-                          PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
-                                  new Location(place.getName().toString(), place.getLatLng().toString()),
-                                  photoBundle);
-
-                          finish();
-                      }
-                });
             }
         });
     }

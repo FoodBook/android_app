@@ -57,7 +57,7 @@ public class PhotoContentService {
         return instance;
     }
 
-    public PhotoItem mockAddPhoto(PhotoContent<Bitmap> photoContent) {
+    public PhotoItem mockAddPhoto(PhotoContent photoContent) {
         String uriPath = "foodbook://photo/" + mockKey++ + ".jpg";
         Bitmap content = photoContent.getContent();
         mockPhotoServer.put(uriPath, photoContent);
@@ -67,7 +67,7 @@ public class PhotoContentService {
     public void getPhotoContent(final PhotoItem photoItem, final ContentListener<Bitmap> contentListener){
         Bitmap bmp = cache.get(photoItem);
         if (bmp != null) {
-            contentListener.onContentLoaded(new PhotoContent<Bitmap>(bmp));
+            contentListener.onContentLoaded(new PhotoContent(bmp));
             return;
         }
 
@@ -84,7 +84,7 @@ public class PhotoContentService {
                     URL url = new URL(photoItem.getReferal().toString());
                     Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                    PhotoContent<Bitmap> contentPhoto = new PhotoContent<Bitmap>(bitmap);
+                    PhotoContent contentPhoto = new PhotoContent(bitmap);
 
                     cache.put(photoItem, bitmap);
                     contentListener.onContentLoaded(contentPhoto);

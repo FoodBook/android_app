@@ -18,12 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 public class GalleryHelper {
     private final int INTENT_ID = 1125;
     private Activity activity;
-    private List<ObjectListener<PhotoContent>> photoListeners = new LinkedList<>();
+    private List<ObjectListener<PhotoItem>> photoListeners = new LinkedList<>();
 
     public GalleryHelper(Activity activity){
         this.activity = activity;
@@ -69,7 +69,7 @@ public class GalleryHelper {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
 
-                ExifInterface ei = new ExifInterface(uri.getPath());
+                ExifInterface ei = new ExifInterface(uri.toString());
                 String orientString = ei.getAttribute(ExifInterface.TAG_ORIENTATION);
                 int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
                 int orientationD = 0;
@@ -86,8 +86,8 @@ public class GalleryHelper {
                     // etc.
                 }
 
-                PhotoContent<Bitmap> photo = new PhotoContent(bitmap);
-                for (ObjectListener<PhotoContent> photoListener : photoListeners) {
+                PhotoItem photo = new PhotoItem(uri, bitmap.getWidth(), bitmap.getHeight());
+                for (ObjectListener<PhotoItem> photoListener : photoListeners) {
                     photoListener.onTaken(photo, orientationD);
                 }
             } catch (IOException e) {
@@ -104,7 +104,7 @@ public class GalleryHelper {
         return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
     }
 
-    public void registerListener(ObjectListener<PhotoContent> photoListener) {
+    public void registerListener(ObjectListener<PhotoItem> photoListener) {
         photoListeners.add(photoListener);
     }
 

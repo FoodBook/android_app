@@ -10,8 +10,8 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Referal;
  */
 public class PhotoItem implements FoodbookType, Referal {
     public static final int UNKNOWN_WIDTH = -1, UNKNOWN_HEIGHT = -1;
-    private Uri referalImageURI;
-    private int width, height;
+    protected Uri referalImageURI;
+    protected int width, height;
 
     public PhotoItem(Uri referalImageURI, int width, int height) {
         this.referalImageURI = referalImageURI;

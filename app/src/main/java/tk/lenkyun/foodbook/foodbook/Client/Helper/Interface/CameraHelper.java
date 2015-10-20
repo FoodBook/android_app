@@ -12,18 +12,16 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 public class CameraHelper {
     private final int INTENT_ID = 1124;
     private Activity activity;
-    private List<ObjectListener<PhotoContent>> photoListeners = new LinkedList<>();
+    private List<ObjectListener<PhotoItem>> photoListeners = new LinkedList<>();
     private Uri fileUri = null;
 
     public CameraHelper(Activity activity){
@@ -57,11 +55,7 @@ public class CameraHelper {
             }
         }
 
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
+        return new File(mediaStorageDir.getPath() + File.separator + "IMG_TEMP.jpg");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -70,7 +64,7 @@ public class CameraHelper {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), fileUri);
 
-                    ExifInterface ei = new ExifInterface(fileUri.getPath());
+                    ExifInterface ei = new ExifInterface(fileUri.toString());
                     String orientString = ei.getAttribute(ExifInterface.TAG_ORIENTATION);
                     int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
                     int orientationD = 0;
@@ -87,8 +81,8 @@ public class CameraHelper {
                         // etc.
                     }
 
-                    PhotoContent<Bitmap> photo = new PhotoContent(bitmap);
-                    for (ObjectListener<PhotoContent> photoListener : photoListeners) {
+                    PhotoItem photo = new PhotoItem(fileUri, bitmap.getWidth(), bitmap.getHeight());
+                    for (ObjectListener<PhotoItem> photoListener : photoListeners) {
                         photoListener.onTaken(photo, orientationD);
                     }
                 } catch (IOException e) {
@@ -106,7 +100,7 @@ public class CameraHelper {
         return Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
     }
 
-    public void registerListener(ObjectListener<PhotoContent> photoListener) {
+    public void setListener(ObjectListener<PhotoItem> photoListener) {
         photoListeners.add(photoListener);
     }
 

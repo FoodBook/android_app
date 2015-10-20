@@ -6,8 +6,10 @@
     android:layout_height="match_parent" android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
-        android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
             android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
@@ -18,6 +20,7 @@
     <include layout="@layout/content_main" />
 
     <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/new_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
@@ -32,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_photo_camera_white_24dp"
-            app:fab_size="mini"
             app:fab_label="@string/fab_camera"
+            app:fab_size="mini"
             />
 
         <com.github.clans.fab.FloatingActionButton
@@ -41,8 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_photo_library_white_24dp"
-            app:fab_size="mini"
             app:fab_label="@string/fab_gallery"
+            app:fab_size="mini"
             />
     </com.github.clans.fab.FloatingActionMenu>
 

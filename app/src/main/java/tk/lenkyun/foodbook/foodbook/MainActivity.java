@@ -25,11 +25,12 @@ import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
+import tk.lenkyun.foodbook.foodbook.Client.Data.Photo.PhotoItemParcelable;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.CameraHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.GalleryHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
-import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
@@ -41,7 +42,6 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInf
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Content;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
@@ -49,12 +49,27 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    final ObjectListener<PhotoItem> photoListener = new ObjectListener<PhotoItem>() {
+        @Override
+        public void onTaken(PhotoItem object, int extra) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    FloatingActionMenu fab = (FloatingActionMenu) findViewById(R.id.new_menu);
+                    fab.hideMenu(true);
+                }
+            });
+            Intent intent = new Intent(MainActivity.this, PhotoUploadActivity.class);
+            intent.putExtra("orientation", extra);
+            intent.putExtra("photo", PhotoItemParcelable.fromPhotoItem(object));
+            startActivityForResult(intent, PhotoUploadActivity.INTENT_ID);
+        }
+    };
     private CameraHelper cameraHelper;
     private GalleryHelper galleryHelper;
     private NewsFeed mNewsFeed;
     private RecyclerView recyclerView;
     private LoginActivity loginActivity;
-
     private LoginListener loginListener = new LoginListener() {
         @Override
         public void onLoginSuccess(LoginService loginService, User user) {
@@ -63,12 +78,11 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onLoginFailed(LoginService loginService, AuthenticationInfo authenticationInfo, LoginException login) {
-
         }
 
         @Override
         public void onLogout(LoginService loginService) {
-
+            uiCheckLogin();
         }
     };
 
@@ -92,29 +106,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        FloatingActionButton fabCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
 
-        cameraHelper = new CameraHelper(this);
-        galleryHelper = new GalleryHelper(this);
-        final ObjectListener<PhotoContent> photoListener = new ObjectListener<PhotoContent>() {
-            @Override
-            public void onTaken(PhotoContent object, int extra) {
-                Repository.getInstance().setData("UploadPhoto", object);
-                Intent intent = new Intent(MainActivity.this, PhotoUploadActivity.class);
-                intent.putExtra("orientation", extra);
-                startActivityForResult(intent, PhotoUploadActivity.INTENT_ID);
-            }
-        };
-        cameraHelper.registerListener(photoListener);
-        galleryHelper.registerListener(photoListener);
+        initCamera();
+        initGallery();
 
-        fabCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cameraHelper.take();
-            }
-        });
+        initNewsFeed();
+    }
 
+    private void initGallery() {
         FloatingActionButton fabGallery = (FloatingActionButton) findViewById(R.id.fab_gallery);
         fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +122,24 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        galleryHelper = new GalleryHelper(this);
+        galleryHelper.registerListener(photoListener);
+    }
+
+    private void initCamera() {
+        FloatingActionButton fabCamera = (FloatingActionButton) findViewById(R.id.fab_camera);
+        fabCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraHelper.take();
+            }
+        });
+
+        cameraHelper = new CameraHelper(this);
+        cameraHelper.setListener(photoListener);
+    }
+
+    private void initNewsFeed() {
         recyclerView = (RecyclerView) findViewById(R.id.newsfeed_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         PostAdapter postAdapter = new PostAdapter(mNewsFeed);

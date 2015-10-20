@@ -1,11 +1,10 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
-import android.graphics.Bitmap;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
@@ -42,7 +41,7 @@ public class PostFeedService {
         return instance;
     }
 
-    public void publishFoodPost(String caption, Location location, PhotoBundle bundle) {
+    public void publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
         // TODO : Implement real
         if (!LoginService.getInstance().validateCurrentSession()) {
             throw new NoLoginException();
@@ -54,13 +53,17 @@ public class PostFeedService {
         FoodPostDetail detail = new FoodPostDetail(foodPostBuilder.getCaption(), foodPostBuilder.getLocation());
 
         PhotoItem c;
-        for (PhotoContent<Bitmap> photoContent : foodPostBuilder.getBundle()) {
+        for (PhotoContent photoContent : foodPostBuilder.getBundle()) {
             c = PhotoContentService.getInstance().mockAddPhoto(photoContent);
             detail.addPhoto(c);
         }
 
         FoodPost foodPost = new FoodPost(String.valueOf(dummyInt), detail, foodPostBuilder.getOwner());
         foodPostList.put(String.valueOf(dummyInt++), foodPost);
+
+        if (requestListener != null) {
+            requestListener.onComplete(foodPost);
+        }
     }
 
     public FoodPost getFeedIndex(NewsFeed feed, int index){

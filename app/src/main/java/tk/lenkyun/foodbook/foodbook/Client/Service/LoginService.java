@@ -140,7 +140,7 @@ public class LoginService {
         }
     }
 
-    public void addLoginListener(Object key, LoginListener loginListener) {
+    public void addLoginListener(Class key, LoginListener loginListener) {
         this.loginListeners.put(key, loginListener);
     }
 
@@ -156,21 +156,21 @@ public class LoginService {
         }
 
         void onLoginSuccess(User user) {
-            for (Entry<Object, LoginListener> l : this.entrySet()) {
+            for (Entry<Class, LoginListener> l : this.entrySet()) {
                 if (l != null)
                     l.getValue().onLoginSuccess(loginService, user);
             }
         }
 
         void onLoginFailed(AuthenticationInfo authenticationInfo, LoginException loginException) {
-            for (Entry<Object, LoginListener> l : this.entrySet()) {
+            for (Entry<Class, LoginListener> l : this.entrySet()) {
                 if (l != null)
                     l.getValue().onLoginFailed(loginService, authenticationInfo, loginException);
             }
         }
 
         void onLogout() {
-            for (Entry<Object, LoginListener> l : this.entrySet()) {
+            for (Entry<Class, LoginListener> l : this.entrySet()) {
                 if (l != null)
                     l.getValue().onLogout(loginService);
             }
