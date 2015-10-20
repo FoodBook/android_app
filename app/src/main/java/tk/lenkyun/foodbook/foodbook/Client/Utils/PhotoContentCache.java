@@ -135,7 +135,7 @@ public class PhotoContentCache extends ContentCache<String, Object> {
 
     // Refer from : http://stackoverflow.com/questions/3425906/creating-temporary-files-in-android
     private Uri writeToFile(Bitmap bitmap) throws IOException {
-        File outputFile = File.createTempFile("c", "jpg", context.getCacheDir());
+        File outputFile = File.createTempFile("foodbookcache", "jpg", context.getCacheDir());
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(outputFile));
 
         return Uri.fromFile(outputFile);

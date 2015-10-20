@@ -40,10 +40,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
-import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.LoginListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -69,11 +71,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(LoginService.getInstance().validateCurrentSession()
-                || FacebookHelper.getInstance().login() != null){
+        if (LoginService.getInstance().validateCurrentSession()) {
             finish();
             return;
         }
+
+        registerLoginListener();
 
         FacebookHelper.getInstance().logout();
         setContentView(R.layout.activity_login);
@@ -116,13 +119,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         this.stopTracking();
                         Profile.setCurrentProfile(currentProfile);
                         FacebookHelper.getInstance().login();
-                        finish();
                     }
                 };
 
                 if(Profile.getCurrentProfile() != null){
                     FacebookHelper.getInstance().login();
-                    finish();
                 }else {
                     showProgress(true);
                     profileTracker.startTracking();
@@ -138,6 +139,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onError(FacebookException error) {
 //                Toast.makeText(getApplicationContext(), "Error : " + error.toString(), Toast.LENGTH_LONG).show();
                 Log.e("FB", "Error " + error.toString());
+            }
+        });
+    }
+
+    private void registerLoginListener() {
+        LoginService.getInstance().addLoginListener(LoginActivity.class, new LoginListener() {
+            @Override
+            public void onLoginSuccess(LoginService loginService, User user) {
+                if (loginService.validateCurrentSession()) {
+                    finish();
+                }
+            }
+
+            @Override
+            public void onLoginFailed(LoginService loginService, AuthenticationInfo authenticationInfo, LoginException login) {
+                if (loginService.validateCurrentSession()) {
+                    finish();
+                }
+            }
+
+            @Override
+            public void onLogout(LoginService loginService) {
+
             }
         });
     }
@@ -239,15 +263,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            AuthenticationInfo authenUser = new UserAuthenticationInfo(email, password);
+            UserAuthenticationInfo authenUser = new UserAuthenticationInfo(email, password);
 
-            try {
-                LoginService.getInstance().login(authenUser);
-                finish();
-            }catch(InvalidUserInfoException e){
-                mEmailView.setError("Invalid username or password");
-                showProgress(false);
-            }
+            LoginService.getInstance().login(authenUser);
         }
     }
 

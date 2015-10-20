@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.DataListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
@@ -54,8 +54,7 @@ public class FacebookHelper {
         Profile profile = getFBProfile();
 
         if(profile != null) {
-            AuthenticationInfo authenUser = new AuthenticationInfo(DebugInfo.USERNAME);
-            authenUser.setAuthenticateInfo(DebugInfo.PASSWORD);
+            UserAuthenticationInfo authenUser = new UserAuthenticationInfo(DebugInfo.USERNAME, DebugInfo.PASSWORD);
 
             // Dummy login
             LoginService.getInstance().login(authenUser);
@@ -77,7 +76,7 @@ public class FacebookHelper {
             return false;
         }
 
-        final PhotoItem photoItem = new PhotoItem(null);
+        final PhotoItem photoItem = new PhotoItem(null, PhotoItem.UNKNOWN_WIDTH, PhotoItem.UNKNOWN_HEIGHT);
         final GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback(){
@@ -111,7 +110,7 @@ public class FacebookHelper {
 
         if(fbProfile != null) {
             Profile profile = new Profile(fbProfile.getFirstName(),
-                    fbProfile.getLastName(), new PhotoItem(fbProfile.getProfilePictureUri(300, 300)));
+                    fbProfile.getLastName(), new PhotoItem(fbProfile.getProfilePictureUri(300, 300), 300, 300));
             return profile;
         }else{
             return null;

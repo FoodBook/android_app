@@ -58,7 +58,7 @@ public class PhotoContentService {
     }
 
     public PhotoItem mockAddPhoto(PhotoContent<Bitmap> photoContent) {
-        String uriPath = "foodbook://photo/" + mockKey + ".jpg";
+        String uriPath = "foodbook://photo/" + mockKey++ + ".jpg";
         Bitmap content = photoContent.getContent();
         mockPhotoServer.put(uriPath, photoContent);
         return new PhotoItem(Uri.parse(uriPath), content.getWidth(), content.getHeight());
@@ -72,8 +72,8 @@ public class PhotoContentService {
         }
 
         // For mock server
-        if (mockPhotoServer.get(photoItem) != null) {
-            contentListener.onContentLoaded(mockPhotoServer.get(photoItem));
+        if (mockPhotoServer.get(photoItem.getReferal().toString()) != null) {
+            contentListener.onContentLoaded(mockPhotoServer.get(photoItem.getReferal().toString()));
             return;
         }
 

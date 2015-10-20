@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,12 +19,10 @@ import com.google.android.gms.location.places.Place;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
-import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
+import tk.lenkyun.foodbook.foodbook.Client.Service.PostFeedService;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
 
 public class PhotoUploadActivity extends AppCompatActivity {
 
@@ -46,7 +43,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_photo_upload);
 
-        final PhotoContent<Bitmap> photo;
+        PhotoContent<Bitmap> photo;
         try {
             photo = (PhotoContent<Bitmap>) Repository.getInstance().getData("UploadPhoto");
         } catch (ClassCastException e) {
@@ -58,7 +55,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
             finish();
             return;
         }
-        Bitmap bitmapX = photo.getContent();
+        final Bitmap bitmapX = photo.getContent();
 
         float height = bitmapX.getHeight();
         float width = bitmapX.getWidth();
@@ -71,10 +68,9 @@ public class PhotoUploadActivity extends AppCompatActivity {
         }
 
         Bitmap bmp = Bitmap.createScaledBitmap(bitmapX, (int) (bitmapX.getWidth() * ratio), (int) (bitmapX.getHeight() * ratio), false);
-        photo.setContent(bmp);
 
         ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
-        Bitmap bitmap = photo.getContent().copy(Bitmap.Config.ARGB_8888, true);
+        final Bitmap bitmap = bmp;
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setARGB(50, 0, 0, 0);
@@ -122,16 +118,14 @@ public class PhotoUploadActivity extends AppCompatActivity {
                               return;
                           }
 
-                          FoodPostDetail postDetail = new FoodPostDetail(caption.getText().toString(),
-                                  new Location(place.getName().toString(), place.getLatLng().toString()));
+                          PhotoBundle photoBundle = new PhotoBundle(
+                                  new PhotoContent<Bitmap>(bitmap)
+                          );
 
-                          FoodPost foodPost = new FoodPost(String.valueOf(new Object().hashCode()),
-                                  postDetail,
-                                  LoginService.getInstance().getUser());
+                          PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
+                                  new Location(place.getName().toString(), place.getLatLng().toString()),
+                                  photoBundle);
 
-                          Log.e("Upload", LoginService.getInstance().getUser().getId());
-
-                          NewsFeedService.getInstance().publishFoodPost(foodPost);
                           finish();
                       }
                 });

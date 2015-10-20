@@ -18,22 +18,23 @@ import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
 /**
  * Created by lenkyun on 16/10/2558.
  */
-public class NewsFeedService {
-    private static NewsFeedService instance = null;
+public class PostFeedService {
+    private static PostFeedService instance = null;
     private static Object lock = new Object();
     private Map<String, FoodPost> foodPostList = new HashMap<>();
     private int dummyInt = 0;
+    private int dummyNewsfeedInt = 0;
 
     /**
      * Get service instance if not exists
      *
      * @return A service instance
      */
-    public static NewsFeedService getInstance() {
+    public static PostFeedService getInstance() {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new NewsFeedService();
+                    instance = new PostFeedService();
                 }
             }
         }
@@ -59,10 +60,6 @@ public class NewsFeedService {
         }
 
         FoodPost foodPost = new FoodPost(String.valueOf(dummyInt), detail, foodPostBuilder.getOwner());
-        foodPost.setId(String.valueOf(dummyInt));
-        for (PhotoContent<Bitmap> photoContent : bundle) {
-
-        }
         foodPostList.put(String.valueOf(dummyInt++), foodPost);
     }
 
@@ -79,7 +76,7 @@ public class NewsFeedService {
     public NewsFeed getNewsFeed(){
         // TODO : Implement real
         // Now dummy news feed
-        NewsFeed newsFeed = new NewsFeed("0110");
+        NewsFeed newsFeed = new NewsFeed(String.valueOf(dummyNewsfeedInt));
         for(Map.Entry<String, FoodPost> entry : foodPostList.entrySet()){
             newsFeed.addFoodPost(new FoodPost(entry.getKey(), entry.getValue().getPostDetail(), null));
         }

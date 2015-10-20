@@ -9,6 +9,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Referal;
  * Created by lenkyun on 15/10/2558.
  */
 public class PhotoItem implements FoodbookType, Referal {
+    public static final int UNKNOWN_WIDTH = -1, UNKNOWN_HEIGHT = -1;
     private Uri referalImageURI;
     private int width, height;
 

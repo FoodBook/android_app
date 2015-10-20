@@ -31,10 +31,13 @@ import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.GalleryHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
+import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.LoginListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
-import tk.lenkyun.foodbook.foodbook.Client.Service.NewsFeedService;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PhotoContentService;
+import tk.lenkyun.foodbook.foodbook.Client.Service.PostFeedService;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Content;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
@@ -48,8 +51,26 @@ public class MainActivity extends AppCompatActivity
 
     private CameraHelper cameraHelper;
     private GalleryHelper galleryHelper;
-    private NewsFeed newsFeed;
+    private NewsFeed mNewsFeed;
     private RecyclerView recyclerView;
+    private LoginActivity loginActivity;
+
+    private LoginListener loginListener = new LoginListener() {
+        @Override
+        public void onLoginSuccess(LoginService loginService, User user) {
+
+        }
+
+        @Override
+        public void onLoginFailed(LoginService loginService, AuthenticationInfo authenticationInfo, LoginException login) {
+
+        }
+
+        @Override
+        public void onLogout(LoginService loginService) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         recyclerView = (RecyclerView) findViewById(R.id.newsfeed_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        PostAdapter postAdapter = new PostAdapter(newsFeed);
+        PostAdapter postAdapter = new PostAdapter(mNewsFeed);
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(postAdapter);
@@ -114,8 +135,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateNewsFeed() {
-        newsFeed = NewsFeedService.getInstance().getNewsFeed();
-        PostAdapter postAdapter = new PostAdapter(newsFeed);
+        mNewsFeed = PostFeedService.getInstance().getNewsFeed();
+        PostAdapter postAdapter = new PostAdapter(mNewsFeed);
         recyclerView.setAdapter(postAdapter);
     }
 
@@ -237,33 +258,34 @@ public class MainActivity extends AppCompatActivity
                 }
         );
 
-        PhotoContentService.getInstance().getPhotoContent(
-                userProfile.getCoverPicture(),
-                new ContentListener<Bitmap>() {
-                    @Override
-                    public void onContentLoaded(Content<Bitmap> content) {
-                        final Bitmap contentIn = content.getContent();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Bitmap scaled = Bitmap.createScaledBitmap(contentIn,
-                                        200, 100, false);
-                                Canvas canvas = new Canvas(scaled);
-                                Paint paint = new Paint();
-                                paint.setARGB(150, 0, 0, 0);
-                                canvas.drawRect(0, 0, 200, 100, paint);
+        if (userProfile.getCoverPicture() != null)
+            PhotoContentService.getInstance().getPhotoContent(
+                    userProfile.getCoverPicture(),
+                    new ContentListener<Bitmap>() {
+                        @Override
+                        public void onContentLoaded(Content<Bitmap> content) {
+                            final Bitmap contentIn = content.getContent();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Bitmap scaled = Bitmap.createScaledBitmap(contentIn,
+                                            200, 100, false);
+                                    Canvas canvas = new Canvas(scaled);
+                                    Paint paint = new Paint();
+                                    paint.setARGB(150, 0, 0, 0);
+                                    canvas.drawRect(0, 0, 200, 100, paint);
 
-                                profileCover.setBackgroundDrawable(new BitmapDrawable(scaled));
-                            }
-                        });
+                                    profileCover.setBackgroundDrawable(new BitmapDrawable(scaled));
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onContentFailed(String errorDetail) {
+
+                        }
                     }
-
-                    @Override
-                    public void onContentFailed(String errorDetail) {
-
-                    }
-                }
-        );
+            );
 
         TextView userFullname = (TextView) findViewById(R.id.user_fullname);
         userFullname.setText(String.format(getResources().getString(R.string.profile_name_display),
@@ -309,7 +331,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onBindViewHolder(final PostViewHolder holder, int position) {
-            NewsFeedService newsFeedService = NewsFeedService.getInstance();
+            PostFeedService newsFeedService = PostFeedService.getInstance();
             FoodPost foodPost = newsFeedService.getFeedIndex(newsFeed, position);
             if (foodPost == null) {
                 return;
