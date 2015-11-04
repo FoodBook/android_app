@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity
         galleryHelper.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case LoginActivity.INTENT_ID:
-                updateProfileUI();
+                //updateProfileUI();
                 break;
             case PhotoUploadActivity.INTENT_ID:
                 updateNewsFeed();

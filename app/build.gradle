@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     dexOptions {
-        preDexLibraries = false
+        preDexLibraries false
     }
     signingConfigs {
         foodbook {
             keyPassword 'pea999'
             storePassword 'pea999'
             keyAlias 'foodbook'
-            storeFile file('data.keystore')
+            storeFile file('S:/works/FoodBook/data.keystore')
         }
     }
     compileSdkVersion 23
@@ -21,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
         signingConfig signingConfigs.foodbook
+        multiDexEnabled false
     }
     buildTypes {
         release {
@@ -29,24 +30,25 @@ android {
             signingConfig signingConfigs.foodbook
         }
         debug {
+            signingConfig signingConfigs.foodbook
         }
     }
     productFlavors {
     }
 }
 
-repositories { mavenCentral() }
+repositories { jcenter() }
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'org.apache.commons:commons-collections4:4.0'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:cardview-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:cardview-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
     compile 'com.github.clans:fab:1.6.1'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.google.android.gms:play-services:8.1.0'
-    compile 'com.android.support:recyclerview-v7:+'
 }
