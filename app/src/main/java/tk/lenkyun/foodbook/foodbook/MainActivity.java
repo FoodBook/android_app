@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void run() {
                     FloatingActionMenu fab = (FloatingActionMenu) findViewById(R.id.new_menu);
-                    fab.hideMenuButton(true);
+                    fab.close(false);
                 }
             });
             Intent intent = new Intent(MainActivity.this, PhotoUploadActivity.class);

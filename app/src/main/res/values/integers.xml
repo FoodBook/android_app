@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="gallery_width_count">3</integer>
+    <integer name="crop_image_size">1024</integer>
 </resources>

@@ -58,6 +58,10 @@ public class LoginService {
         createDummyUserSession(user);
     }
 
+    public SessionAuthenticationInfo getSession(){
+        return userSession;
+    }
+
     /**
      * Renew current session whatever it is timed-out or not.
      */
@@ -71,7 +75,7 @@ public class LoginService {
             }
         }
 
-        if (userSession.getAuthenticateInfo().equals(DebugInfo.TOKEN)) {
+        if (userSession.getInfo().equals(DebugInfo.TOKEN)) {
             UserAuthenticationInfo authenUser = new UserAuthenticationInfo(DebugInfo.USERNAME, DebugInfo.PASSWORD);
             userSession = null;
 
@@ -86,7 +90,7 @@ public class LoginService {
     public synchronized void updateSession(SessionAuthenticationInfo session) {
         // TODO : implement real
         if (userSession.getUserId().equals(DebugInfo.UID) &&
-                userSession.getAuthenticateInfo().equals(DebugInfo.TOKEN)) {
+                userSession.getInfo().equals(DebugInfo.TOKEN)) {
             this.userSession = session;
             this.updateSession();
         }
@@ -124,7 +128,7 @@ public class LoginService {
     private void createDummyUserSession(UserAuthenticationInfo user) {
         if(userSession != null) {
             loginListeners.onLoginFailed(user, new AlreadyLoginException());
-        } else if (user.getAuthenticateId().equals(DebugInfo.USERNAME) && user.getAuthenticateInfo().equals(DebugInfo.PASSWORD)) {
+        } else if (user.getId().equals(DebugInfo.USERNAME) && user.getInfo().equals(DebugInfo.PASSWORD)) {
             Profile profile = null;
             if(profile == null) {
                 PhotoItem photoItem = new PhotoItem(Uri.parse(DebugInfo.PHOTO_URI), 300, 300);

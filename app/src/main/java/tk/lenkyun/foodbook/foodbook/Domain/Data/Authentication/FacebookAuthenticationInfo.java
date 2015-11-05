@@ -18,12 +18,12 @@ public class FacebookAuthenticationInfo extends AuthenticationInfo {
     }
 
     @Override
-    public String getAuthenticateId() {
+    public String getId() {
         return facebookId;
     }
 
     @Override
-    public String getAuthenticateInfo() {
+    public String getInfo() {
         return facebookToken;
     }
 

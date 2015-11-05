@@ -19,6 +19,7 @@ import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.R;
 
 public class GalleryHelper {
     private final int INTENT_ID = 1125;
@@ -110,9 +111,18 @@ public class GalleryHelper {
 
     public void take() {
         Intent intent = new Intent();
-        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        intent.setType("image/*");
+
+        // Referral : http://stackoverflow.com/questions/26915437/unable-to-save-cropped-image-android
+        File f = new File(Environment.getExternalStorageDirectory()+"/foodbook/upload.jpg");;
+        try {
+            f.createNewFile();
+        } catch (IOException ex) {
+            Log.e("io", ex.getMessage());
+        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+
         activity.startActivityForResult(Intent.createChooser(intent,
                 "Complete action using"), INTENT_ID);
     }

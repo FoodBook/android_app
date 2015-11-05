@@ -1,18 +1,20 @@
 package tk.lenkyun.foodbook.foodbook.Domain.Operation;
 
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 
 /**
  * Created by lenkyun on 19/10/2558.
  */
-public class FoodPostBuilder {
+public class FoodPostBuilder implements FoodbookType {
     private Location location;
     private String caption;
     private PhotoBundle bundle;
-    private User owner;
+    private AuthenticationInfo owner;
 
-    public FoodPostBuilder(String caption, Location location, PhotoBundle photos, User owner) {
+    public FoodPostBuilder(String caption, Location location, PhotoBundle photos, AuthenticationInfo owner) {
         this.location = location;
         this.caption = caption;
         this.bundle = photos;
@@ -43,11 +45,11 @@ public class FoodPostBuilder {
         this.bundle = bundle;
     }
 
-    public User getOwner() {
+    public AuthenticationInfo getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(AuthenticationInfo owner) {
         this.owner = owner;
     }
 }

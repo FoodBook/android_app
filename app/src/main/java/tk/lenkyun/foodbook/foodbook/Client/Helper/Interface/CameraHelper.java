@@ -17,15 +17,16 @@ import java.util.List;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.R;
 
 public class CameraHelper {
     private final int INTENT_ID = 1124;
-    private Activity activity;
+    private Activity mActivity;
     private List<ObjectListener<PhotoItem>> photoListeners = new LinkedList<>();
     private Uri fileUri = null;
 
     public CameraHelper(Activity activity){
-        this.activity = activity;
+        this.mActivity = activity;
     }
 
     /**
@@ -62,7 +63,7 @@ public class CameraHelper {
         if(requestCode == INTENT_ID && resultCode == Activity.RESULT_OK){
             if(fileUri != null){
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), fileUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), fileUri);
 
                     ExifInterface ei = new ExifInterface(fileUri.toString());
                     String orientString = ei.getAttribute(ExifInterface.TAG_ORIENTATION);
@@ -107,7 +108,9 @@ public class CameraHelper {
     public void take() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri();
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        activity.startActivityForResult(intent, INTENT_ID);
+
+        mActivity.startActivityForResult(intent, INTENT_ID);
     }
 }

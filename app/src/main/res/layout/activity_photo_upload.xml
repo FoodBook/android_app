@@ -38,17 +38,25 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <LinearLayout
+                    <tk.lenkyun.foodbook.foodbook.View.SquareLinearLayout
                         android:id="@+id/upload_imageview_layout"
                         android:layout_width="fill_parent"
                         android:layout_height="190dp"
                         android:background="#000"
                         android:orientation="horizontal">
-                        <ImageView
+                        <com.isseiaoki.simplecropview.CropImageView
+                            android:id="@+id/upload_imageview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:cropMode="ratio_1_1"
+                            />
+
+                        <!--<ImageView
                             android:id="@+id/upload_imageview"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent" />
-                    </LinearLayout>
+                            android:layout_height="fill_parent" />-->
+                    </tk.lenkyun.foodbook.foodbook.View.SquareLinearLayout>
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"

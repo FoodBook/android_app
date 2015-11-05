@@ -15,12 +15,12 @@ public class UserAuthenticationInfo extends AuthenticationInfo {
     }
 
     @Override
-    public String getAuthenticateId() {
+    public String getId() {
         return userid;
     }
 
     @Override
-    public String getAuthenticateInfo() {
+    public String getInfo() {
         return password;
     }
 

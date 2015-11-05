@@ -1,10 +1,15 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
+import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
+import tk.lenkyun.foodbook.foodbook.Config;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
@@ -13,6 +18,9 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.FoodPostBuilder;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
+import tk.lenkyun.foodbook.foodbook.Parser.json.FoodPostBuilderParser;
+import tk.lenkyun.foodbook.foodbook.Promise.Promise;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -33,7 +41,7 @@ public class PostFeedService {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new PostFeedService();
+                    instance = new PostFeedService(new HTTPAdapter(Config.SERVER));
                 }
             }
         }
@@ -41,29 +49,27 @@ public class PostFeedService {
         return instance;
     }
 
-    public void publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
+    ConnectionAdapter mConnection;
+    public PostFeedService(ConnectionAdapter connectionAdapter){
+        mConnection = connectionAdapter;
+    }
+
+    public static final String SERVICE_CREATE_POST = "post";
+    public static final String SERVICE_ATTR = "data";
+
+    public Promise<JSONObject> publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
         // TODO : Implement real
         if (!LoginService.getInstance().validateCurrentSession()) {
             throw new NoLoginException();
         }
 
-        FoodPostBuilder foodPostBuilder = new FoodPostBuilder(caption, location, bundle, LoginService.getInstance().getUser());
+        FoodPostBuilder foodPostBuilder = new FoodPostBuilder(caption, location, bundle, LoginService.getInstance().getSession());
 
-        // mock server
-        FoodPostDetail detail = new FoodPostDetail(foodPostBuilder.getCaption(), foodPostBuilder.getLocation());
-
-        PhotoItem c;
-        for (PhotoContent photoContent : foodPostBuilder.getBundle()) {
-            c = PhotoContentService.getInstance().mockAddPhoto(photoContent);
-            detail.addPhoto(c);
-        }
-
-        FoodPost foodPost = new FoodPost(String.valueOf(dummyInt), detail, foodPostBuilder.getOwner());
-        foodPostList.put(String.valueOf(dummyInt++), foodPost);
-
-        if (requestListener != null) {
-            requestListener.onComplete(foodPost);
-        }
+        return mConnection.createRequest()
+                    .setService(SERVICE_CREATE_POST)
+                    .addDetail(SERVICE_ATTR, new FoodPostBuilderParser().parse(foodPostBuilder))
+                    .setSubmit(true)
+                    .request();
     }
 
     public FoodPost getFeedIndex(NewsFeed feed, int index){

@@ -1,5 +1,6 @@
 package tk.lenkyun.foodbook.foodbook;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,14 +8,21 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.maps.model.LatLng;
+import com.isseiaoki.simplecropview.CropImageView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -30,6 +38,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 public class PhotoUploadActivity extends AppCompatActivity {
 
@@ -45,6 +54,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_photo_upload);
@@ -54,10 +64,11 @@ public class PhotoUploadActivity extends AppCompatActivity {
             return;
         }
 
+        initSubmit();
         initPlacePicker();
     }
 
-    private void initSumbit() {
+    private void initSubmit() {
         final EditText caption = (EditText) findViewById(R.id.upload_caption);
 
         FloatingActionButton submit = (FloatingActionButton) findViewById(R.id.upload_submit);
@@ -67,17 +78,27 @@ public class PhotoUploadActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (place == null) {
-                            onPublishError("Please enter location");
-                            return;
-                        }
+//                        if (place == null) {
+//                            onPublishError("Please enter location");
+//                            return;
+//                        }
 
+                        CropImageView cropImageView = (CropImageView) findViewById(R.id.upload_imageview);
                         PhotoBundle photoBundle = new PhotoBundle(
-                                new PhotoContent(mBitmap)
+                                new PhotoContent(cropImageView.getCroppedBitmap())
                         );
 
+                        String placeName = "";
+                        LatLng latLng = null;
+                        if (place != null) {
+                            placeName = place.getName().toString();
+                            latLng = place.getLatLng();
+                        }
+
+                        showProgressbar();
+
                         PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
-                                new Location(place.getName().toString(), place.getLatLng().toString()),
+                                new Location(placeName, latLng),
                                 photoBundle, new RequestListener<FoodPost>() {
                                     @Override
                                     public void onComplete(FoodPost result) {
@@ -88,9 +109,53 @@ public class PhotoUploadActivity extends AppCompatActivity {
                                     public void onFailed(final RequestException e) {
                                         onPublishError(e.getMessage());
                                     }
+                                })
+                                .onSuccess(new PromiseRun<JSONObject>() {
+                                    @Override
+                                    public void run(String status, JSONObject json) {
+                                        try {
+                                            if (json.has("error") && json.getInt("error") == 0) {
+
+                                            } else {
+                                                String text = getResources().getString(R.string.upload_failed);
+                                                if (json.has("detail"))
+                                                    text += ", " + json.getString("detail");
+
+                                                showText(text);
+                                            }
+                                        } catch (JSONException e) {
+                                        }
+
+                                        finish();
+                                    }
+                                })
+                                .onFailed(new PromiseRun<JSONObject>() {
+                                    @Override
+                                    public void run(String status, JSONObject object) {
+                                        showText(status);
+                                        finish();
+                                    }
                                 });
                     }
                 });
+            }
+        });
+    }
+
+    private void showText(final String text){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(PhotoUploadActivity.this, text, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void showProgressbar() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setProgressBarIndeterminateVisibility(true);
             }
         });
     }
@@ -159,38 +224,15 @@ public class PhotoUploadActivity extends AppCompatActivity {
             return false;
         }
 
-        float height = bitmapX.getHeight(),
-                width = bitmapX.getWidth();
-
-        if (width > height) {
-            mRatio = 480F / height;
-            mRotation = LANDSCAPE;
-        } else {
-            mRatio = 640F / width;
-            mRotation = PORTRAIT;
+        if(bitmapX.getHeight() < bitmapX.getWidth()) {
+            bitmapX = Bitmap.createBitmap(bitmapX, bitmapX.getWidth() / 2 - bitmapX.getHeight() / 2, 0, bitmapX.getHeight(), bitmapX.getHeight());
+        }else{
+            bitmapX = Bitmap.createBitmap(bitmapX, 0, bitmapX.getHeight() / 2 - bitmapX.getWidth() / 2, bitmapX.getWidth(), bitmapX.getWidth());
         }
-
-        bitmapX = Bitmap.createScaledBitmap(bitmapX,
-                (int) (bitmapX.getWidth() * mRatio),
-                (int) (bitmapX.getHeight() * mRatio), false);
-        bitmapX = bitmapX.copy(bitmapX.getConfig(), true);
-
-        if (mRotation == LANDSCAPE) {
-            mRatio = width / height;
-        } else {
-            mRatio = height / width;
-        }
-
-        Paint paint = new Paint();
-        paint.setARGB(50, 0, 0, 0);
-
-        Canvas canvas = new Canvas(bitmapX);
-        canvas.drawRect(0, 0, bitmapX.getWidth(), bitmapX.getHeight(), paint);
 
         ImageView imageView = (ImageView) findViewById(R.id.upload_imageview);
         imageView.setImageBitmap(bitmapX);
 
-        initRatio();
         mBitmap = bitmapX;
         return true;
     }
@@ -199,7 +241,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        setPhotoViewRatio(mRotation, mRatio);
+        //setPhotoViewRatio(mRotation, mRatio);
     }
 
     private void initRatio() {

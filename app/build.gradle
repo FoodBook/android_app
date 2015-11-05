@@ -51,4 +51,5 @@ dependencies {
     compile 'com.github.clans:fab:1.6.1'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.isseiaoki:simplecropview:1.0.10'
 }

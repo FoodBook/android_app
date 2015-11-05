@@ -16,12 +16,12 @@ public class SessionAuthenticationInfo extends AuthenticationInfo {
     }
 
     @Override
-    public String getAuthenticateId() {
+    public String getId() {
         return userId;
     }
 
     @Override
-    public String getAuthenticateInfo() {
+    public String getInfo() {
         return token;
     }
 

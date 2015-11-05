@@ -31,4 +31,10 @@
 
     <string name="profile_name_display" formatted="false">%s  %s</string>
     <string name="title_activity_photo_selector">Create A Post</string>
+
+    <string name="config_server">https://lenkyun.tk/foodhub</string>
+    <string name="title_activity_image_cropper">ImageCropper</string>
+    <string name="upload_successful">Upload success</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="error_connection">No connection to internet.</string>
 </resources>
