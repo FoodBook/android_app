@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public static final int INTENT_ID = 1;
     /**
-     * Id to identity READ_CONTACTS permission request.
+     * Id to identity READ_CONTACTS permission execute.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
     // UI references.
@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Callback received when a permissions request has been completed.
+     * Callback received when a permissions execute has been completed.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

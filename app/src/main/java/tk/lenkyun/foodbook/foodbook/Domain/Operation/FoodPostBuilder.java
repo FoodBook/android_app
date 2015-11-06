@@ -12,13 +12,11 @@ public class FoodPostBuilder implements FoodbookType {
     private Location location;
     private String caption;
     private PhotoBundle bundle;
-    private AuthenticationInfo owner;
 
     public FoodPostBuilder(String caption, Location location, PhotoBundle photos, AuthenticationInfo owner) {
         this.location = location;
         this.caption = caption;
         this.bundle = photos;
-        this.owner = owner;
     }
 
     public Location getLocation() {
@@ -45,11 +43,4 @@ public class FoodPostBuilder implements FoodbookType {
         this.bundle = bundle;
     }
 
-    public AuthenticationInfo getOwner() {
-        return owner;
-    }
-
-    public void setOwner(AuthenticationInfo owner) {
-        this.owner = owner;
-    }
 }

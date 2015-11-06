@@ -26,6 +26,6 @@ public class UserAuthenticationInfo extends AuthenticationInfo {
 
     @Override
     public void setAuthenticateInfo(String authenticateInfo) {
-        throw new UnsupportedOperationException("No support for UserAuthenticationInfo to set new password. (Must request from Tools)");
+        throw new UnsupportedOperationException("No support for UserAuthenticationInfo to set new password. (Must execute from Tools)");
     }
 }

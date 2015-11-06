@@ -27,7 +27,7 @@ public class SessionAuthenticationInfo extends AuthenticationInfo {
 
     @Override
     public void setAuthenticateInfo(String authenticateInfo) {
-        throw new UnsupportedOperationException("No support for FacebookAuthenticationInfo to set new token. (Must request from Tools)");
+        throw new UnsupportedOperationException("No support for FacebookAuthenticationInfo to set new token. (Must execute from Tools)");
     }
 
     public String getUserId() {

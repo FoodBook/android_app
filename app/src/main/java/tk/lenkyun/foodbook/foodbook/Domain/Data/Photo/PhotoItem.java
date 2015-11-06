@@ -2,15 +2,24 @@ package tk.lenkyun.foodbook.foodbook.Domain.Data.Photo;
 
 import android.net.Uri;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodbookType;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Referal;
+import tk.lenkyun.foodbook.foodbook.Domain.Jackson.UriDeserializer;
+import tk.lenkyun.foodbook.foodbook.Domain.Jackson.UriSerializer;
 
 /**
  * Created by lenkyun on 15/10/2558.
  */
 public class PhotoItem implements FoodbookType, Referal {
     public static final int UNKNOWN_WIDTH = -1, UNKNOWN_HEIGHT = -1;
+
+    @JsonSerialize(using = UriSerializer.class)
+    @JsonDeserialize(using = UriDeserializer.class)
     protected Uri referalImageURI;
+
     protected int width, height;
 
     public PhotoItem(Uri referalImageURI, int width, int height) {

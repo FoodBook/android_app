@@ -112,14 +112,14 @@ public class PhotoUploadActivity extends AppCompatActivity {
                                 })
                                 .onSuccess(new PromiseRun<JSONObject>() {
                                     @Override
-                                    public void run(String status, JSONObject json) {
+                                    public void run(String status, JSONObject result) {
                                         try {
-                                            if (json.has("error") && json.getInt("error") == 0) {
+                                            if (result.has("error") && result.getInt("error") == 0) {
 
                                             } else {
                                                 String text = getResources().getString(R.string.upload_failed);
-                                                if (json.has("detail"))
-                                                    text += ", " + json.getString("detail");
+                                                if (result.has("detail"))
+                                                    text += ", " + result.getString("detail");
 
                                                 showText(text);
                                             }
@@ -131,7 +131,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
                                 })
                                 .onFailed(new PromiseRun<JSONObject>() {
                                     @Override
-                                    public void run(String status, JSONObject object) {
+                                    public void run(String status, JSONObject result) {
                                         showText(status);
                                         finish();
                                     }

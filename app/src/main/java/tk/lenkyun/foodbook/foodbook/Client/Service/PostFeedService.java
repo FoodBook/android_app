@@ -1,5 +1,8 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -11,16 +14,11 @@ import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
 import tk.lenkyun.foodbook.foodbook.Config;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPostDetail;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.FoodPostBuilder;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
-import tk.lenkyun.foodbook.foodbook.Parser.json.FoodPostBuilderParser;
 import tk.lenkyun.foodbook.foodbook.Promise.Promise;
-import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -54,7 +52,7 @@ public class PostFeedService {
         mConnection = connectionAdapter;
     }
 
-    public static final String SERVICE_CREATE_POST = "post";
+    public static final String[] SERVICE_CREATE_POST = "post";
     public static final String SERVICE_ATTR = "data";
 
     public Promise<JSONObject> publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
@@ -65,11 +63,17 @@ public class PostFeedService {
 
         FoodPostBuilder foodPostBuilder = new FoodPostBuilder(caption, location, bundle, LoginService.getInstance().getSession());
 
-        return mConnection.createRequest()
-                    .setService(SERVICE_CREATE_POST)
-                    .addDetail(SERVICE_ATTR, new FoodPostBuilderParser().parse(foodPostBuilder))
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String foodpost = mapper.writeValueAsString(foodPostBuilder);
+            return mConnection.createRequest()
+                    .addServicePath(SERVICE_CREATE_POST)
+                    .addInputParam(SERVICE_ATTR, foodpost)
                     .setSubmit(true)
-                    .request();
+                    .execute();
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 
     public FoodPost getFeedIndex(NewsFeed feed, int index){

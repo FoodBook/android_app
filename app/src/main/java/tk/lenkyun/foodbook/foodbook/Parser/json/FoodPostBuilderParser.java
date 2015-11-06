@@ -21,7 +21,6 @@ public class FoodPostBuilderParser extends JSONParser<FoodPostBuilder> {
 
             json.put("caption", object.getCaption());
             json.put("bundle", new PhotoBundleParser().parse(object.getBundle()));
-            json.put("user", new AuthenticationInfoParser().parse(object.getOwner()));
 
             return json;
         } catch (JSONException e) {
