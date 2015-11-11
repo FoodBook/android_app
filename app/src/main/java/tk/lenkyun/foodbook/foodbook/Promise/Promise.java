@@ -36,4 +36,24 @@ public class Promise<E> {
         if(successRun != null)
             successRun.run(status, obj);
     }
+
+    public void bind(final Promise<E> promise){
+        onSuccess(new PromiseRun<E>() {
+            @Override
+            public void run(String status, E result) {
+                promise.success(status, result);
+            }
+        });
+
+        bindOnFailed(promise);
+    }
+
+    public void bindOnFailed(final Promise promise){
+        onFailed(new PromiseRun<E>() {
+            @Override
+            public void run(String status, E result) {
+                promise.failed(status);
+            }
+        });
+    }
 }

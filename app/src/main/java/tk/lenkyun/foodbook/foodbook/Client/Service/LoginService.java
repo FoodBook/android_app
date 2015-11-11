@@ -4,18 +4,24 @@ import android.net.Uri;
 
 import org.apache.commons.collections4.map.LRUMap;
 
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionResult;
+import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.AlreadyLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.LoginListener;
+import tk.lenkyun.foodbook.foodbook.Config;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.SessionAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Promise.Promise;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 /**
  * Created by lenkyun on 15/10/2558.
@@ -27,8 +33,10 @@ public class LoginService {
     private User loggedInUser = null;
     private LoginListenerList loginListeners;
 
-    public LoginService() {
+    private ConnectionAdapter mConnectionAdapter;
+    public LoginService(ConnectionAdapter connectionAdapter) {
         loginListeners = new LoginListenerList(this);
+        mConnectionAdapter = connectionAdapter;
     }
 
     /**
@@ -40,7 +48,7 @@ public class LoginService {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new LoginService();
+                    instance = new LoginService(new HTTPAdapter(Config.SERVER));
                 }
             }
         }
@@ -51,11 +59,61 @@ public class LoginService {
     /**
      * Create new session with provided user authentication
      * @param user User authentication info
+     * @return result promise
      */
-    public void login(UserAuthenticationInfo user) {
-        // TODO : Implement real
-        // Dummy
-        createDummyUserSession(user);
+    public Promise<User> login(UserAuthenticationInfo user) {
+        final Promise<User> promise = new Promise<>();
+        final Promise<ConnectionResult> resultPromise = mConnectionAdapter.createRequest()
+                .addServicePath("oauth").addServicePath("login")
+                .setSubmit(true)
+                .setDataInputParam(user)
+                .execute();
+
+        resultPromise.onSuccess(new PromiseRun<ConnectionResult>() {
+            @Override
+            public void run(String status, ConnectionResult result) {
+                if (!result.isError()) {
+                    userSession = result.getResult(SessionAuthenticationInfo.class);
+                    getUser().bind(promise);
+                } else {
+                    userSession = null;
+                    promise.failed("login failed");
+                }
+            }
+        });
+
+        return promise;
+    }
+
+    /**
+     * Get 'User' from current session
+     * @return User in current session
+     */
+    public Promise<User> getUser(){
+        final Promise<User> promise = new Promise<>();
+
+        if(userSession == null){
+            promise.failed("no user logged in");
+            return promise;
+        }
+
+        Promise<ConnectionResult> resultPromise = mConnectionAdapter.createRequest()
+                .addServicePath("user").addServicePath("me")
+                .addAuthentication(getSession())
+                .execute();
+
+        resultPromise.onSuccess(new PromiseRun<ConnectionResult>() {
+            @Override
+            public void run(String status, ConnectionResult result) {
+                if(result.isError())
+                    promise.failed(status);
+                else
+                    promise.success("success", result.getResult(User.class));
+            }
+        });
+
+        resultPromise.bindOnFailed(promise);
+        return promise;
     }
 
     public SessionAuthenticationInfo getSession(){
@@ -105,43 +163,9 @@ public class LoginService {
         userSession = null;
     }
 
-    /**
-     * Get 'User' from current session
-     * @return User in current session
-     */
-    public User getUser() {
-        if (loggedInUser == null)
-            return null;
-
-        if (userSession == null || !userSession.getUserId().equals(loggedInUser.getId())) {
-            return null;
-        }
-        return loggedInUser;
-    }
-
     public boolean validateCurrentSession(){
         return userSession != null;
 
-    }
-
-    /* DEBUG */
-    private void createDummyUserSession(UserAuthenticationInfo user) {
-        if(userSession != null) {
-            loginListeners.onLoginFailed(user, new AlreadyLoginException());
-        } else if (user.getId().equals(DebugInfo.USERNAME) && user.getInfo().equals(DebugInfo.PASSWORD)) {
-            Profile profile = null;
-            if(profile == null) {
-                PhotoItem photoItem = new PhotoItem(Uri.parse(DebugInfo.PHOTO_URI), 300, 300);
-                profile = new Profile(DebugInfo.FIRSTNAME, DebugInfo.LASTNAME, photoItem);
-            }
-
-            User userI = new User(DebugInfo.UID, DebugInfo.USERNAME, profile);
-            this.userSession = new SessionAuthenticationInfo(userI.getId(), userI.getUsername(), DebugInfo.TOKEN);
-            this.loggedInUser = userI;
-            loginListeners.onLoginSuccess(loggedInUser);
-        } else {
-            loginListeners.onLoginFailed(user, new InvalidUserInfoException());
-        }
     }
 
     public void addLoginListener(Class key, LoginListener loginListener) {
