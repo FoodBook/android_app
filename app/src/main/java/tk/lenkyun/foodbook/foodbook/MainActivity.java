@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.github.clans.fab.FloatingActionButton;
@@ -304,6 +305,8 @@ public class MainActivity extends AppCompatActivity
             return new PostViewHolder(v);
         }
 
+
+
         @Override
         public void onBindViewHolder(final PostViewHolder holder, int position) {
             NewsFeedService newsFeedService = NewsFeedService.getInstance();
@@ -326,6 +329,12 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void run() {
                                     holder.feedPhoto.setImageBitmap(content.getContent());
+                                    holder.feedPhoto.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Toast.makeText(MainActivity.this, "Button Clicked", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -352,6 +361,8 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onContentFailed(String errorDetail) {
                         }
+
+
                     }
             );
         }
