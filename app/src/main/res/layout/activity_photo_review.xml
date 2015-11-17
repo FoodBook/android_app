@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context="tk.lenkyun.foodbook.foodbook.PhotoUploadActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    >
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0dip"
+        android:layout_height="0dip"
+        android:id="@+id/dummyView"
+        android:orientation="horizontal" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:fillViewport="false">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
+            >
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+                    <LinearLayout
+                        android:id="@+id/upload_imageview_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="190dp"
+                        android:background="#000"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:id="@+id/upload_imageview"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@android:color/transparent"
+                        android:layout_marginTop="10dp"
+                        >
+
+                        <RatingBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleIndicator" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="#FAFAFA"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView android:id="@+id/upload_caption" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/caption"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:ems="10"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@android:color/transparent"
+                            />
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="#FAFAFA"
+                            android:layout_marginBottom="20dp">
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right">
+
+                        <EditText
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:inputType="date"
+                            android:ems="10"
+                            android:id="@+id/editText"
+                            android:foregroundGravity="right" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="1">
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:text="comment"
+                            android:textColor="@color/colorAccent"
+                            android:background="@android:color/transparent"
+                            android:id="@+id/comment_photo"
+                            android:layout_weight="0.33" />
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:text="share"
+                            android:textColor="@color/colorAccent"
+                            android:background="@android:color/transparent"
+                            android:id="@+id/share_photo"
+                            android:layout_weight="0.33" />
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:text="report"
+                            android:background="@android:color/transparent"
+                            android:id="@+id/report_photo"
+                            android:layout_weight="0.33" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.design.widget.CoordinatorLayout>
+        </android.support.v7.widget.CardView>
+    </ScrollView>
+
+
+</LinearLayout >

@@ -28,4 +28,6 @@
     <string name="upload_caption">Caption...</string>
     <string name="title_activity_photo_upload">Upload</string>
     <string name="title_activity_select_map">Map</string>
+    <string name="title_activity_photo_review">PhotoReviewActivity</string>
+    <string name="caption">Some caption</string>
 </resources>
