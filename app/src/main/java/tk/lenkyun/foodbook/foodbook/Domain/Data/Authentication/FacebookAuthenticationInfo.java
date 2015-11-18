@@ -1,14 +1,12 @@
 package tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication;
 
-import com.facebook.AccessToken;
-
 public class FacebookAuthenticationInfo extends AuthenticationInfo {
     public static final String AUTH_TYPE = "facebook/token";
     private String facebookToken;
     private String facebookId;
 
-    public FacebookAuthenticationInfo(String id, AccessToken facebookToken) {
-        this(id, facebookToken.getToken());
+    public FacebookAuthenticationInfo(){
+        super(AUTH_TYPE);
     }
 
     public FacebookAuthenticationInfo(String id, String facebookToken) {
@@ -28,7 +26,17 @@ public class FacebookAuthenticationInfo extends AuthenticationInfo {
     }
 
     @Override
-    public void setAuthenticateInfo(String authenticateInfo) {
-        throw new UnsupportedOperationException("No support for FacebookAuthenticationInfo to set new token. (Must execute from Tools)");
+    public void setId(String id) {
+        facebookId = id;
+    }
+
+    @Override
+    public void setInfo(String info) {
+        facebookToken = info;
+    }
+
+    @Override
+    public void setAuthenticationType(String authenticateInfo) {
+        //throw new UnsupportedOperationException("No support for FacebookAuthenticationInfo to set new token. (Must request from Tools)");
     }
 }

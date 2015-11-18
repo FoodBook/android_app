@@ -9,6 +9,8 @@ public class Tag {
         this(tagName, null);
     }
 
+    public Tag(){}
+
     public Tag(String tagName, String referalID){
         this.tagName = tagName;
         this.tagReferal = referalID;
@@ -18,7 +20,15 @@ public class Tag {
         return tagName;
     }
 
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
     public String getTagReferal() {
         return tagReferal;
+    }
+
+    public void setTagReferal(String tagReferal) {
+        this.tagReferal = tagReferal;
     }
 }

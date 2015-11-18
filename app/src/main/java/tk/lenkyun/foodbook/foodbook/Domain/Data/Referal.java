@@ -1,12 +1,12 @@
 package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
-import android.net.Uri;
+import java.net.URI;
 
 /**
  * Created by lenkyun on 18/10/2558.
  */
 public interface Referal {
-    Uri getReferal();
+    URI getReferal();
 
-    void setReferal(Uri uri);
+    void setReferal(URI uri);
 }

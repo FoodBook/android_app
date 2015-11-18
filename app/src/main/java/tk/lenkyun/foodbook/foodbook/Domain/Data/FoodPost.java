@@ -8,13 +8,14 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 /**
  * Created by lenkyun on 16/10/2558.
  */
-public class FoodPost {
+public class FoodPost implements FoodbookType {
     private String id;
     private List<Comment> commentList = new LinkedList<>();
     private FoodPostDetail postDetail;
-    private int commentCount = 0;
     private User owner;
+    private float averageRate = 0;
 
+    public FoodPost(){};
     public FoodPost(String id, FoodPostDetail postDetail, User owner) {
         this.id = id;
         this.postDetail = postDetail;
@@ -43,19 +44,22 @@ public class FoodPost {
         return commentList.get(index);
     }
 
-    public int getCommentCount(){
-        return commentList.size();
-    }
-
-    public void setCommentCount(int count){
-        this.commentCount = count;
-    }
-
     public User getOwner() {
         return owner;
+    }
+    public void setOwner(User owner){
+        this.owner = owner;
     }
 
     public FoodPostDetail getPostDetail() {
         return postDetail;
+    }
+
+    public float getAverageRate() {
+        return averageRate;
+    }
+
+    public void setAverageRate(float averageRate) {
+        this.averageRate = averageRate;
     }
 }

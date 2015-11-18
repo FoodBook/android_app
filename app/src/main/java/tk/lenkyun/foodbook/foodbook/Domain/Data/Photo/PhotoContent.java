@@ -15,6 +15,7 @@ public class PhotoContent implements FoodbookType, Content<Bitmap> {
     @JsonDeserialize(using = PhotoContentDeserializer.class)
     protected Bitmap content;
 
+    public PhotoContent(){}
     public PhotoContent(Bitmap content) {
         this.content = content;
     }
