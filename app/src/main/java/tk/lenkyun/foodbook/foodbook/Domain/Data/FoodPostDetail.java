@@ -1,9 +1,12 @@
 package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 /**
@@ -11,12 +14,15 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
  */
 public class FoodPostDetail {
     private Date createdDate = null;
+    @JsonProperty("tag")
     private List<Tag> tagList = new LinkedList<>();
     private Location location;
+    @JsonProperty("photos")
     private List<PhotoItem> photoItems = new LinkedList<PhotoItem>();
     private String caption;
 
     public FoodPostDetail(String caption, Location location) {
+        this.caption = caption;
         this.location = location;
     }
 
@@ -28,8 +34,17 @@ public class FoodPostDetail {
         return photoItems.size();
     }
 
+    @JsonIgnore
     public PhotoItem getPhoto(int index) {
         return photoItems.get(index);
+    }
+
+    public List<PhotoItem> getPhotoItems(){
+        return photoItems;
+    }
+
+    public void setPhotoItems(List<PhotoItem> photoItems){
+        this.photoItems = photoItems;
     }
 
     public int countTag(){
@@ -38,6 +53,11 @@ public class FoodPostDetail {
 
     public Tag getTag(int index){
         return tagList.get(index);
+    }
+
+    @JsonIgnore
+    public Collection<Tag> getTags(){
+        return tagList;
     }
 
     public void pushTag(Tag tag){
@@ -58,5 +78,13 @@ public class FoodPostDetail {
 
     public void setCaption(String caption) {
         this.caption = caption;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }
