@@ -21,6 +21,7 @@ public class FoodPostDetail {
     private List<PhotoItem> photoItems = new LinkedList<PhotoItem>();
     private String caption;
 
+    public FoodPostDetail(){}
     public FoodPostDetail(String caption, Location location) {
         this.caption = caption;
         this.location = location;
@@ -86,5 +87,10 @@ public class FoodPostDetail {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public void setTags(Collection<Tag> tags) {
+        this.tagList = new LinkedList<>();
+        tagList.addAll(tags);
     }
 }
