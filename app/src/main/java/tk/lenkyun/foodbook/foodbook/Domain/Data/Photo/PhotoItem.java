@@ -36,7 +36,7 @@ public class PhotoItem implements FoodbookType, Referal {
 
     @Override
     public void setReferal(Uri uri) {
-        referalImageURI = uri;
+        this.referalImageURI = uri;
     }
 
     public int getWidth() {

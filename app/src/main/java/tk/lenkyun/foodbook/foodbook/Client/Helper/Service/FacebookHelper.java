@@ -19,6 +19,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticatio
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Promise.Promise;
 
 /**
  * Created by lenkyun on 15/10/2558.
@@ -44,7 +45,7 @@ public class FacebookHelper {
         return instance;
     }
 
-    public User login(){
+    public Promise<User> login(){
         // TODO : Implement real
         if(AccessToken.getCurrentAccessToken() == null){
             return null;

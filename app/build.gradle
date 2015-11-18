@@ -9,7 +9,7 @@ android {
             keyPassword 'pea999'
             storePassword 'pea999'
             keyAlias 'foodbook'
-            storeFile file('S:/works/FoodBook/data.keystore')
+            storeFile file('D:/Documents/Github/android_app/data.keystore')
         }
     }
     compileSdkVersion 23

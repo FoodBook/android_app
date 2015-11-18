@@ -1,15 +1,11 @@
 package tk.lenkyun.foodbook.foodbook.Client.Service;
 
-import android.net.Uri;
-
 import org.apache.commons.collections4.map.LRUMap;
 
 import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
 import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionResult;
 import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
-import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.AlreadyLoginException;
-import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.InvalidUserInfoException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.LoginListener;
@@ -17,8 +13,6 @@ import tk.lenkyun.foodbook.foodbook.Config;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.SessionAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
-import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 import tk.lenkyun.foodbook.foodbook.Promise.Promise;
 import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
@@ -147,7 +141,7 @@ public class LoginService {
      */
     public synchronized void updateSession(SessionAuthenticationInfo session) {
         // TODO : implement real
-        if (userSession.getUserId().equals(DebugInfo.UID) &&
+        if (userSession.getId().equals(DebugInfo.UID) &&
                 userSession.getInfo().equals(DebugInfo.TOKEN)) {
             this.userSession = session;
             this.updateSession();

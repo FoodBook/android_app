@@ -1,10 +1,7 @@
 package tk.lenkyun.foodbook.foodbook;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,14 +18,12 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.isseiaoki.simplecropview.CropImageView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import tk.lenkyun.foodbook.foodbook.Client.Data.Photo.PhotoItemParcelable;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
+import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.RequestException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PostFeedService;
@@ -98,7 +93,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
                         showProgressbar();
 
                         PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
-                                new Location(placeName, latLng),
+                                new Location(placeName, new Location.LatLng(latLng.latitude, latLng.longitude)),
                                 photoBundle, new RequestListener<FoodPost>() {
                                     @Override
                                     public void onComplete(FoodPost result) {
@@ -110,28 +105,16 @@ public class PhotoUploadActivity extends AppCompatActivity {
                                         onPublishError(e.getMessage());
                                     }
                                 })
-                                .onSuccess(new PromiseRun<JSONObject>() {
+                                .onSuccess(new PromiseRun<FoodPost>() {
                                     @Override
-                                    public void run(String status, JSONObject result) {
-                                        try {
-                                            if (result.has("error") && result.getInt("error") == 0) {
-
-                                            } else {
-                                                String text = getResources().getString(R.string.upload_failed);
-                                                if (result.has("detail"))
-                                                    text += ", " + result.getString("detail");
-
-                                                showText(text);
-                                            }
-                                        } catch (JSONException e) {
-                                        }
-
+                                    public void run(String status, FoodPost result) {
+                                        Repository.getInstance().setData("upload_result", result);
                                         finish();
                                     }
                                 })
-                                .onFailed(new PromiseRun<JSONObject>() {
+                                .onFailed(new PromiseRun<FoodPost>() {
                                     @Override
-                                    public void run(String status, JSONObject result) {
+                                    public void run(String status, FoodPost result) {
                                         showText(status);
                                         finish();
                                     }

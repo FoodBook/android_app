@@ -45,6 +45,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -245,9 +246,19 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
+        LoginService.getInstance().getUser().onSuccess(
+                new PromiseRun<User>() {
+                    @Override
+                    public void run(String status, User result) {
+                        updateProfileUI2(result);
+                    }
+                }
+        );
+    }
+    private void updateProfileUI2(User user){
         final ImageView profile = (ImageView) findViewById(R.id.profile_picture);
         final LinearLayout profileCover = (LinearLayout) findViewById(R.id.cover_layout);
-        final Profile userProfile = LoginService.getInstance().getUser().getProfile();
+        final Profile userProfile = user.getProfile();
         final PhotoItem profilePicture = userProfile.getProfilePicture();
 
         final MainActivity self = this;
@@ -308,9 +319,8 @@ public class MainActivity extends AppCompatActivity
         userFullname.setText(String.format(getResources().getString(R.string.profile_name_display),
                 userProfile.getFirstname(), userProfile.getLastname()
         ));
-
         TextView userUsername = (TextView) findViewById(R.id.user_username);
-        userUsername.setText(LoginService.getInstance().getUser().getUsername());
+        userUsername.setText(user.getUsername());
 
     }
 
@@ -349,7 +359,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onBindViewHolder(final PostViewHolder holder, int position) {
             PostFeedService newsFeedService = PostFeedService.getInstance();
-            FoodPost foodPost = newsFeedService.getFeedIndex(newsFeed, position);
+            final FoodPost foodPost = newsFeedService.getFeedIndex(newsFeed, position);
             if (foodPost == null) {
                 return;
             }
@@ -372,6 +382,14 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void run() {
                                     holder.feedPhoto.setImageBitmap(content.getContent());
+                                    holder.feedPhoto.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(getApplicationContext(), PhotoReviewActivity.class);
+                                            intent.putExtra("review", foodPost.getPostDetail().getPhoto(0).getReferal().toString());
+                                            startActivity(intent);
+                                        }
+                                    });
                                 }
                             });
                         }

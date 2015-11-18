@@ -3,12 +3,11 @@ package tk.lenkyun.foodbook.foodbook.Client.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionResult;
 import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
@@ -19,6 +18,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.NewsFeed;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.FoodPostBuilder;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
 import tk.lenkyun.foodbook.foodbook.Promise.Promise;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 /**
  * Created by lenkyun on 16/10/2558.
@@ -52,10 +52,10 @@ public class PostFeedService {
         mConnection = connectionAdapter;
     }
 
-    public static final String[] SERVICE_CREATE_POST = "post";
+    public static final String SERVICE_CREATE_POST = "post";
     public static final String SERVICE_ATTR = "data";
 
-    public Promise<JSONObject> publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
+    public Promise<FoodPost> publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
         // TODO : Implement real
         if (!LoginService.getInstance().validateCurrentSession()) {
             throw new NoLoginException();
@@ -66,11 +66,26 @@ public class PostFeedService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String foodpost = mapper.writeValueAsString(foodPostBuilder);
-            return mConnection.createRequest()
+            Promise<ConnectionResult> result = mConnection.createRequest()
                     .addServicePath(SERVICE_CREATE_POST)
                     .addInputParam(SERVICE_ATTR, foodpost)
                     .setSubmit(true)
                     .execute();
+
+            final Promise<FoodPost> foodPostPromise = new Promise<>();
+            result.onSuccess(new PromiseRun<ConnectionResult>() {
+                @Override
+                public void run(String status, ConnectionResult result) {
+                    foodPostPromise.success("success", result.getResult(FoodPost.class));
+                }
+            }).onFailed(new PromiseRun<ConnectionResult>() {
+                @Override
+                public void run(String status, ConnectionResult result) {
+                    foodPostPromise.failed(String.format("%s %s", String.valueOf(result.getErrorCode()), result.getStatusDetail()));
+                }
+            });
+
+            return foodPostPromise;
         } catch (JsonProcessingException e) {
             return null;
         }
