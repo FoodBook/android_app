@@ -1,35 +1,50 @@
-package tk.lenkyun.foodbook.foodbook.Data;
+package tk.lenkyun.foodbook.foodbook.Domain.Data;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import tk.lenkyun.foodbook.foodbook.Data.Photo.Photo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 
 /**
  * Created by lenkyun on 16/10/2558.
  */
-public class PostDetail {
+public class FoodPostDetail {
     private Date createdDate = null;
+    @JsonProperty("tag")
     private List<Tag> tagList = new LinkedList<>();
     private Location location;
-    private List<Photo> photos = new LinkedList<Photo>();
+    @JsonProperty("photos")
+    private List<PhotoItem> photoItems = new LinkedList<PhotoItem>();
     private String caption;
 
-    public PostDetail(String caption, Location location){
+    public FoodPostDetail(String caption, Location location) {
+        this.caption = caption;
         this.location = location;
     }
 
-    public void addPhoto(Photo photo){
-        photos.add(photo);
+    public void addPhoto(PhotoItem photoItem) {
+        photoItems.add(photoItem);
     }
 
     public int countPhoto(){
-        return photos.size();
+        return photoItems.size();
     }
 
-    public Photo getPhoto(int index){
-        return photos.get(index);
+    @JsonIgnore
+    public PhotoItem getPhoto(int index) {
+        return photoItems.get(index);
+    }
+
+    public List<PhotoItem> getPhotoItems(){
+        return photoItems;
+    }
+
+    public void setPhotoItems(List<PhotoItem> photoItems){
+        this.photoItems = photoItems;
     }
 
     public int countTag(){
@@ -38,6 +53,11 @@ public class PostDetail {
 
     public Tag getTag(int index){
         return tagList.get(index);
+    }
+
+    @JsonIgnore
+    public Collection<Tag> getTags(){
+        return tagList;
     }
 
     public void pushTag(Tag tag){
@@ -58,5 +78,13 @@ public class PostDetail {
 
     public void setCaption(String caption) {
         this.caption = caption;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }
