@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.github.clans.fab.FloatingActionButton;
@@ -147,15 +148,36 @@ public class MainActivity extends AppCompatActivity
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(postAdapter);
-        updateNewsFeed();
+        //updateNewsFeed();
 
         recyclerView.setHasFixedSize(true);
     }
 
     public void updateNewsFeed() {
-        mNewsFeed = PostFeedService.getInstance().getNewsFeed();
-        PostAdapter postAdapter = new PostAdapter(mNewsFeed);
-        recyclerView.setAdapter(postAdapter);
+        PostFeedService.getInstance().getNewsFeed()
+        .onSuccess(new PromiseRun<NewsFeed>() {
+            @Override
+            public void run(String status, NewsFeed result) {
+                mNewsFeed = result;
+                final PostAdapter postAdapter = new PostAdapter(mNewsFeed);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(postAdapter);
+                    }
+                });
+            }
+        }).onFailed(new PromiseRun<NewsFeed>() {
+            @Override
+            public void run(final String status, NewsFeed result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "newsfeed loading failed, " + status, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     public void uiCheckLogin() {
@@ -234,6 +256,7 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case LoginActivity.INTENT_ID:
                 updateProfileUI();
+                updateNewsFeed();
                 break;
             case PhotoUploadActivity.INTENT_ID:
                 updateNewsFeed();
@@ -364,7 +387,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onBindViewHolder(final PostViewHolder holder, int position) {
             PostFeedService newsFeedService = PostFeedService.getInstance();
-            final FoodPost foodPost = newsFeedService.getFeedIndex(newsFeed, position);
+            final FoodPost foodPost = newsFeed.getFoodPost(position);
             if (foodPost == null) {
                 return;
             }

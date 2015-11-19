@@ -71,7 +71,13 @@ public class HTTPResult implements ConnectionResult {
         try {
             return mapper.readValue(json.getJSONObject("result").toString(), c);
         } catch (JSONException e) {
-            return null;
+            try {
+                return mapper.readValue(json.getJSONArray("result").toString(), c);
+            } catch (IOException e1) {
+                return null;
+            } catch (JSONException e1) {
+                return null;
+            }
         } catch (JsonMappingException e) {
             return null;
         } catch (JsonParseException e) {
