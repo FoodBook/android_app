@@ -22,10 +22,6 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <instrumentation
-        android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="tk.lenkyun.foodbook.foodbook" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -86,6 +82,10 @@
         <activity
             android:name=".PickLocationActivity"
             android:label="@string/title_activity_pick_location" >
+        </activity>
+        <activity
+            android:name=".searchActivity"
+            android:label="@string/title_activity_search" >
         </activity>
     </application>
 
