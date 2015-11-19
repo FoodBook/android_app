@@ -87,6 +87,10 @@
             android:name=".searchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+
+        <activity android:name=".EditProfilePopupActivity"
+            android:theme="@style/AppTheme.Transparent"
+            ></activity>
         <activity android:name=".commentActivity" >
         </activity>
     </application>

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    public SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +110,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                updateNewsFeed();
+            }
+        });
 
         initCamera();
         initGallery();
@@ -154,6 +165,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateNewsFeed() {
+        mSwipeRefreshLayout.setRefreshing(true);
         PostFeedService.getInstance().getNewsFeed()
         .onSuccess(new PromiseRun<NewsFeed>() {
             @Override
@@ -164,6 +176,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         recyclerView.setAdapter(postAdapter);
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -174,6 +187,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(), "newsfeed loading failed, " + status, Toast.LENGTH_LONG).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -231,17 +245,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_logout) {
-            FacebookHelper.getInstance().logout();
-            uiCheckLogin();
+        if (id == R.id.nav_edit_account){
+            Intent intent = new Intent(getApplicationContext(), EditProfilePopupActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

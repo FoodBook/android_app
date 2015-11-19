@@ -31,7 +31,7 @@ public class PhotoContentService {
     private Map<String, PhotoContent> mockPhotoServer = new LRUMap<>();
 
     public PhotoContentService(Context context) {
-        cache = new PhotoContentCache(context, 30, 60, 20, 100);
+        cache = new PhotoContentCache(context, 5, 120, 5, 30);
     }
 
     public static void initialize(Context context) {
