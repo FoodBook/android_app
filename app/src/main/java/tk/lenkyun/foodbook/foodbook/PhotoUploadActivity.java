@@ -33,6 +33,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.Location;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Operation.PhotoBundle;
+import tk.lenkyun.foodbook.foodbook.Promise.Promise;
 import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 public class PhotoUploadActivity extends AppCompatActivity {
@@ -92,33 +93,30 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
                         showProgressbar();
 
-                        PostFeedService.getInstance().publishFoodPost(caption.getText().toString(),
+                        Promise<FoodPost> foodPostPromise = PostFeedService.getInstance().publishFoodPost(
+                                caption.getText().toString(),
                                 new Location(placeName, new Location.LatLng(latLng.latitude, latLng.longitude)),
-                                photoBundle, new RequestListener<FoodPost>() {
-                                    @Override
-                                    public void onComplete(FoodPost result) {
-                                        finish();
-                                    }
+                                photoBundle);
 
-                                    @Override
-                                    public void onFailed(final RequestException e) {
-                                        onPublishError(e.getMessage());
-                                    }
-                                })
-                                .onSuccess(new PromiseRun<FoodPost>() {
-                                    @Override
-                                    public void run(String status, FoodPost result) {
-                                        Repository.getInstance().setData("upload_result", result);
-                                        finish();
-                                    }
-                                })
-                                .onFailed(new PromiseRun<FoodPost>() {
-                                    @Override
-                                    public void run(String status, FoodPost result) {
-                                        showText(status);
-                                        finish();
-                                    }
-                                });
+                        if(foodPostPromise == null){
+                            onPublishError("Unknown error occurred!");
+                        }else {
+                            foodPostPromise
+                                    .onSuccess(new PromiseRun<FoodPost>() {
+                                        @Override
+                                        public void run(String status, FoodPost result) {
+                                            Repository.getInstance().setData("upload_result", result);
+                                            finish();
+                                        }
+                                    })
+                                    .onFailed(new PromiseRun<FoodPost>() {
+                                        @Override
+                                        public void run(String status, FoodPost result) {
+                                            showText(status);
+                                            finish();
+                                        }
+                                    });
+                        }
                     }
                 });
             }
@@ -241,11 +239,11 @@ public class PhotoUploadActivity extends AppCompatActivity {
 //        });
     }
 
-    private void onPublishError(String text) {
+    private void onPublishError(final String text) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
             }
         });
     }
