@@ -31,7 +31,7 @@ public class PhotoItemParcelable extends PhotoItem implements Parcelable {
     //
     protected PhotoItemParcelable(Parcel in) {
         super(null, 0, 0);
-        referalImageURI = Uri.parse(in.readString());
+        referal = Uri.parse(in.readString());
         width = in.readInt();
         height = in.readInt();
     }
@@ -47,7 +47,7 @@ public class PhotoItemParcelable extends PhotoItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(referalImageURI.toString());
+        dest.writeString(referal.toString());
         dest.writeInt(width);
         dest.writeInt(height);
     }

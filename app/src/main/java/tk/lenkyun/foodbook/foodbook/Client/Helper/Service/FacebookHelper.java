@@ -12,14 +12,22 @@ import com.facebook.login.LoginManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionRequest;
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionResult;
+import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.DebugInfo;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.DataListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
+import tk.lenkyun.foodbook.foodbook.Config;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.FacebookAuthenticationInfo;
+import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.SessionAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.Profile;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 import tk.lenkyun.foodbook.foodbook.Promise.Promise;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 /**
  * Created by lenkyun on 15/10/2558.
@@ -27,6 +35,11 @@ import tk.lenkyun.foodbook.foodbook.Promise.Promise;
 public class FacebookHelper {
     private static FacebookHelper instance = null;
     private static Object lock = new Object();
+    private ConnectionAdapter connectionAdapter;
+
+    public FacebookHelper(HTTPAdapter httpAdapter) {
+        this.connectionAdapter = httpAdapter;
+    }
 
     /**
      * Get service instance if not exists
@@ -37,7 +50,7 @@ public class FacebookHelper {
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new FacebookHelper();
+                    instance = new FacebookHelper(new HTTPAdapter(Config.SERVER));
                 }
             }
         }
@@ -51,18 +64,30 @@ public class FacebookHelper {
             return null;
         }
 
-        // Debug info accept any user
-        Profile profile = getFBProfile();
+        final Promise<User> userPromise = new Promise<>();
+        ConnectionRequest request = connectionAdapter.createRequest();
 
-        if(profile != null) {
-            UserAuthenticationInfo authenUser = new UserAuthenticationInfo(DebugInfo.USERNAME, DebugInfo.PASSWORD);
+        Promise<ConnectionResult> result = request.addServicePath("oauth").addServicePath("login").addServicePath("facebook")
+            .setSubmit(true)
+            .setDataInputParam(new FacebookAuthenticationInfo(null, AccessToken.getCurrentAccessToken().toString()))
+            .execute();
 
-            // Dummy login
-            LoginService.getInstance().login(authenUser);
-            return LoginService.getInstance().getUser();
-        }else{
-            return null;
-        }
+        result.onSuccess(new PromiseRun<ConnectionResult>() {
+            @Override
+            public void run(String status, ConnectionResult result) {
+                if(result.isError()){
+                    userPromise.failed("0");
+                }else{
+                    LoginService.getInstance().updateSession(result.getResult(
+                            SessionAuthenticationInfo.class
+                    ));
+
+                    LoginService.getInstance().getUser().bind(userPromise);
+                }
+            }
+        });
+
+        return userPromise;
     }
 
     public void logout(){
