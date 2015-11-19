@@ -55,7 +55,7 @@ public class PostFeedService {
     public static final String SERVICE_CREATE_POST = "post";
     public static final String SERVICE_ATTR = "data";
 
-    public Promise<FoodPost> publishFoodPost(String caption, Location location, PhotoBundle bundle, RequestListener<FoodPost> requestListener) {
+    public Promise<FoodPost> publishFoodPost(String caption, Location location, PhotoBundle bundle) {
         // TODO : Implement real
         if (!LoginService.getInstance().validateCurrentSession()) {
             throw new NoLoginException();
