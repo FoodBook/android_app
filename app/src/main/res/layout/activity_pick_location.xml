@@ -14,14 +14,22 @@
         android:layout_height="wrap_content"
         android:background="#FFF"
         style="@style/AppTheme"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:weightSum="1">
 
 
-        <SearchView
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_icon"
+            android:src="@drawable/ic_search_white_24dp"/>
+
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/searchView">
-        </SearchView>
+            android:id="@+id/search_location" />
+
+
     </LinearLayout>
 
     <LinearLayout
