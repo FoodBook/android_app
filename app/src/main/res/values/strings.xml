@@ -66,4 +66,5 @@
     <string name="share">Share</string>
     <string name="share_link">Link</string>
     <string name="share_by_app">By App</string>
+    <string name="add_comment">add a comment</string>
 </resources>
