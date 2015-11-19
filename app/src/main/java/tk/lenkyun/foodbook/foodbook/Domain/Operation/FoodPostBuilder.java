@@ -13,6 +13,7 @@ public class FoodPostBuilder implements FoodbookType {
     private String caption;
     private PhotoBundle bundle;
 
+    public FoodPostBuilder(){}
     public FoodPostBuilder(String caption, Location location, PhotoBundle photos, AuthenticationInfo owner) {
         this.location = location;
         this.caption = caption;

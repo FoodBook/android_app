@@ -90,10 +90,16 @@ public class PhotoUploadActivity extends AppCompatActivity {
                         }
 
                         showProgressbar();
+                        Location location;
+                        if(latLng == null){
+                            location = new Location(placeName, new Location.LatLng(0, 0), null);
+                        }else{
+                            location = new Location(placeName, new Location.LatLng(latLng.latitude, latLng.longitude), null);
+                        }
 
                         Promise<FoodPost> foodPostPromise = PostFeedService.getInstance().publishFoodPost(
                                 caption.getText().toString(),
-                                new Location(placeName, new Location.LatLng(latLng.latitude, latLng.longitude)),
+                                location,
                                 photoBundle);
 
                         if(foodPostPromise == null){
