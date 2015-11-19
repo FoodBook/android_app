@@ -165,7 +165,8 @@ public class PhotoUploadActivity extends AppCompatActivity {
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                placeHelper.pick();
+                Intent intent = new Intent (getApplicationContext(), PickLocationActivity.class);
+                startActivity(intent);
             }
         });
     }

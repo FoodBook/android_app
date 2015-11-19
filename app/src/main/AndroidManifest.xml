@@ -80,8 +80,12 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".View.PhotoReviewActivity"
+            android:name=".PhotoReviewActivity"
             android:label="@string/title_activity_photo_review" >
+        </activity>
+        <activity
+            android:name=".PickLocationActivity"
+            android:label="@string/title_activity_pick_location" >
         </activity>
     </application>
 

@@ -38,4 +38,5 @@
     <string name="upload_failed">Upload failed</string>
     <string name="error_connection">No connection to internet.</string>
     <string name="title_activity_photo_review">PhotoReviewActivity</string>
+    <string name="title_activity_pick_location">PickLocationActivity</string>
 </resources>
