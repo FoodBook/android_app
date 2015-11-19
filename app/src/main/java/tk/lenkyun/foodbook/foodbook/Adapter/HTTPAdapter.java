@@ -75,6 +75,10 @@ public class HTTPAdapter implements ConnectionAdapter<HTTPRequest>{
                     // Referral : http://stackoverflow.com/questions/29465996/how-to-get-json-object-using-httpurlconnection-instead-of-volley
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
+                    //connection.setConnectTimeout(10000);
+
+                    StringBuilder result = new StringBuilder();
+                    String line;
 
                     if(requestDetail.isSubmit()){
                         connection.setDoOutput(true);
@@ -86,21 +90,27 @@ public class HTTPAdapter implements ConnectionAdapter<HTTPRequest>{
                         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
                         out.write(send);
                         out.flush();
+
+                        InputStream is = connection.getInputStream();
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+
+                        while((line = bufferedReader.readLine()) != null){
+                            result.append(line);
+                        }
+
                         out.close();
                     }else{
                         connection.setRequestMethod("GET");
                         connection.connect();
+
+                        InputStream is = connection.getInputStream();
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+
+                        while((line = bufferedReader.readLine()) != null){
+                            result.append(line);
+                        }
                     }
 
-
-                    InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while((line = bufferedReader.readLine()) != null){
-                        result.append(line);
-                    }
 
                     try {
                         promise.success("success", new HTTPResult(result.toString()));

@@ -3,10 +3,13 @@ package tk.lenkyun.foodbook.foodbook.Client.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionAdapter;
+import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionRequest;
 import tk.lenkyun.foodbook.foodbook.Adapter.ConnectionResult;
 import tk.lenkyun.foodbook.foodbook.Adapter.HTTPAdapter;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.NoLoginException;
@@ -53,7 +56,6 @@ public class PostFeedService {
     }
 
     public static final String SERVICE_CREATE_POST = "post";
-    public static final String SERVICE_ATTR = "data";
 
     public Promise<FoodPost> publishFoodPost(String caption, Location location, PhotoBundle bundle) {
         // TODO : Implement real
@@ -68,7 +70,8 @@ public class PostFeedService {
             String foodpost = mapper.writeValueAsString(foodPostBuilder);
             Promise<ConnectionResult> result = mConnection.createRequest()
                     .addServicePath(SERVICE_CREATE_POST)
-                    .addInputParam(SERVICE_ATTR, foodpost)
+                    .setDataInputParam(foodPostBuilder)
+                    .addAuthentication(LoginService.getInstance().getSession())
                     .setSubmit(true)
                     .execute();
 
@@ -81,7 +84,7 @@ public class PostFeedService {
             }).onFailed(new PromiseRun<ConnectionResult>() {
                 @Override
                 public void run(String status, ConnectionResult result) {
-                    foodPostPromise.failed(String.format("%s %s", String.valueOf(result.getErrorCode()), result.getStatusDetail()));
+                    foodPostPromise.failed(status);
                 }
             });
 
@@ -101,14 +104,37 @@ public class PostFeedService {
         }
     }
 
-    public NewsFeed getNewsFeed(){
-        // TODO : Implement real
-        // Now dummy news feed
-        NewsFeed newsFeed = new NewsFeed(String.valueOf(dummyNewsfeedInt));
-        for(Map.Entry<String, FoodPost> entry : foodPostList.entrySet()){
-            newsFeed.addFoodPost(new FoodPost(entry.getKey(), entry.getValue().getPostDetail(), null));
-        }
+    Location.LatLng mLatLng = new Location.LatLng(13.5, 100);
 
-        return newsFeed;
+    public Promise<NewsFeed> getNewsFeed(){
+        final Promise<NewsFeed> newsFeedPromise = new Promise<>();
+
+        ConnectionRequest connectionRequest = mConnection.createRequest();
+
+        Promise<ConnectionResult> resultPromise = connectionRequest
+                .addServicePath("feed")
+                .addServicePath(String.valueOf(mLatLng.latitude)).addServicePath(String.valueOf(mLatLng.longitude))
+                .addAuthentication(LoginService.getInstance().getSession())
+                .execute();
+
+        resultPromise.onSuccess(new PromiseRun<ConnectionResult>() {
+            @Override
+            public void run(String status, ConnectionResult result) {
+                if(result.isError()){
+                    newsFeedPromise.failed(result.getStatusDetail());
+                }else{
+                    FoodPost[] foodPosts = result.getResult(FoodPost[].class);
+                    NewsFeed newsFeed = new NewsFeed(UUID.randomUUID().toString());
+
+                    for(FoodPost foodPost : foodPosts){
+                        newsFeed.addFoodPost(foodPost);
+                    }
+
+                    newsFeedPromise.success("ok", newsFeed);
+                }
+            }
+        }).bindOnFailed(newsFeedPromise);
+
+        return newsFeedPromise;
     }
 }
