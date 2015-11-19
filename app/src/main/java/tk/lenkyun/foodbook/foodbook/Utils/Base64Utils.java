@@ -13,12 +13,12 @@ public class Base64Utils {
     }
 
     public static String encode(byte[] bytes){
-        Base64 base64 = new Base64(true);
+        Base64 base64 = new Base64(100, new byte[0], true);
         return new String(base64.encode(bytes));
     };
 
     public static byte[] decode(String string){
-        Base64 base64 = new Base64(true);
+        Base64 base64 = new Base64(100, new byte[0], true);
         return base64.decode(string);
     }
 }
