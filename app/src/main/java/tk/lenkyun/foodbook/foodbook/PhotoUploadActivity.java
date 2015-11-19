@@ -24,8 +24,6 @@ import tk.lenkyun.foodbook.foodbook.Client.Data.Photo.PhotoItemParcelable;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.PlaceHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
-import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.RequestException;
-import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.RequestListener;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PostFeedService;
 import tk.lenkyun.foodbook.foodbook.Client.Utils.PhotoUtils;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
