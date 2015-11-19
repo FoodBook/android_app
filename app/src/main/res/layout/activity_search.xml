@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:id="@+id/post_grid_view"
             xmlns:android="http://schemas.android.com/apk/res/android"
+            android:paddingTop="20dp"
             >
 
         </android.support.v7.widget.RecyclerView>

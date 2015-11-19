@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:id="@+id/location_view"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            >
+            android:paddingTop="20dp">
 
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
