@@ -40,5 +40,30 @@
     <string name="title_activity_photo_review">PhotoReviewActivity</string>
     <string name="title_activity_pick_location">PickLocationActivity</string>
     <string name="title_activity_search">searchActivity</string>
-    <string name="add_comment">Write a comment...</string>
+
+    <!--String related to register-->
+    <string name="register">Register</string>
+    <string name="reg_email">Email</string>
+    <string name="reg_password">Password</string>
+    <string name="reg_name">Name</string>
+    <string name="reg_lastname">Last Name</string>
+    <string name="reg_submit">Submit</string>
+    <string name="reg_cancel">Cancel</string>
+
+    <!--String related to profile view-->
+    <string name="profile_email">Email</string>
+    <string name="profile_follow">Follow</string>
+    <string name="profile_unfollow">Unfollow</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_email_example">test@test.com</string>
+    <string name="profile_colon">:</string>
+
+    <!--String related to my profile-->
+    <string name="my_profile_save">Save</string>
+    
+    <!--String related to share-->
+    <string name="share">Share</string>
+    <string name="share_link">Link</string>
+    <string name="share_by_app">By App</string>
 </resources>
