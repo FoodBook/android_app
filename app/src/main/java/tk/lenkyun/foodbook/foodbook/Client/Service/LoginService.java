@@ -88,11 +88,17 @@ public class LoginService {
      * Get 'User' from current session
      * @return User in current session
      */
+    User user = null;
     public Promise<User> getUser(){
         final Promise<User> promise = new Promise<>();
 
         if(userSession == null){
             promise.failed("no user logged in");
+            return promise;
+        }
+
+        if(user != null){
+            promise.success("ok", user);
             return promise;
         }
 
@@ -106,8 +112,9 @@ public class LoginService {
             public void run(String status, ConnectionResult result) {
                 if(result.isError())
                     promise.failed(status);
-                else
+                else {
                     promise.success("success", result.getResult(User.class));
+                }
             }
         });
 
@@ -157,9 +164,8 @@ public class LoginService {
      * Get current session terminated.
      */
     public synchronized void logout() {
-        // TODO : Implement real
-        // Dummy
         userSession = null;
+        user = null;
     }
 
     public boolean validateCurrentSession(){

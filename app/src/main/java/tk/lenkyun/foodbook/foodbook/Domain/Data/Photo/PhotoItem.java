@@ -18,25 +18,25 @@ public class PhotoItem implements FoodbookType, Referal {
 
     @JsonSerialize(using = UriSerializer.class)
     @JsonDeserialize(using = UriDeserializer.class)
-    protected Uri referalImageURI;
+    protected Uri referal;
 
     protected int width, height;
 
     public PhotoItem(){}
     public PhotoItem(Uri referalImageURI, int width, int height) {
-        this.referalImageURI = referalImageURI;
+        this.referal = referalImageURI;
         this.width = width;
         this.height = height;
     }
 
     @Override
     public Uri getReferal() {
-        return referalImageURI;
+        return referal;
     }
 
     @Override
     public void setReferal(Uri uri) {
-        this.referalImageURI = uri;
+        this.referal = uri;
     }
 
     public int getWidth() {
