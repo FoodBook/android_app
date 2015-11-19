@@ -87,6 +87,8 @@
             android:name=".searchActivity"
             android:label="@string/title_activity_search" >
         </activity>
+        <activity android:name=".commentActivity" >
+        </activity>
     </application>
 
 </manifest>
