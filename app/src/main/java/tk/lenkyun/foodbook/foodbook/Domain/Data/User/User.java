@@ -18,6 +18,7 @@ public class User implements FoodbookType {
     @JsonIgnore
     private Collection<User> following = new ArrayList<>();
 
+    public User(){}
     public User(String id, String username, Profile profile){
         this.id = id;
         this.username = username;

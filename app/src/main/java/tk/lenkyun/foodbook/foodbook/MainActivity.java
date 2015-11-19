@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     private LoginListener loginListener = new LoginListener() {
         @Override
         public void onLoginSuccess(LoginService loginService, User user) {
-
+            updateProfileUI();
         }
 
         @Override
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity
         galleryHelper.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case LoginActivity.INTENT_ID:
-                //updateProfileUI();
+                updateProfileUI();
                 break;
             case PhotoUploadActivity.INTENT_ID:
                 updateNewsFeed();
@@ -249,8 +249,13 @@ public class MainActivity extends AppCompatActivity
         LoginService.getInstance().getUser().onSuccess(
                 new PromiseRun<User>() {
                     @Override
-                    public void run(String status, User result) {
-                        updateProfileUI2(result);
+                    public void run(String status, final User result) {
+                        runOnUiThread(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              updateProfileUI2(result);
+                                          }
+                                      });
                     }
                 }
         );

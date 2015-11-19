@@ -120,7 +120,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                         this.stopTracking();
                         Profile.setCurrentProfile(currentProfile);
-                        FacebookHelper.getInstance().login();
+                        FacebookHelper.getInstance().login()
+                                .onSuccess(new PromiseRun<User>() {
+                                    @Override
+                                    public void run(String status, User result) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                showProgress(false);
+                                            }
+                                        });
+                                    }
+                                })
+                                .onFailed(new PromiseRun<User>() {
+                                    @Override
+                                    public void run(String status, User result) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // run register
+                                            }
+                                        });
+                                    }
+                                });
                     }
                 };
 
