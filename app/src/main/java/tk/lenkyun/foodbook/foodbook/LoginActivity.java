@@ -27,6 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -46,6 +47,7 @@ import tk.lenkyun.foodbook.foodbook.Client.Service.LoginService;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.AuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Authentication.UserAuthenticationInfo;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
+import tk.lenkyun.foodbook.foodbook.Promise.PromiseRun;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -154,9 +156,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             @Override
             public void onLoginFailed(LoginService loginService, AuthenticationInfo authenticationInfo, LoginException login) {
-                if (loginService.validateCurrentSession()) {
-                    finish();
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        mEmailView.setError("Invalid username or password.");
+                    }
+                });
             }
 
             @Override
@@ -220,6 +226,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
+    @Override
+    public void onBackPressed(){
+        return;
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -249,10 +260,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
 
         if (cancel) {
@@ -265,7 +272,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             UserAuthenticationInfo authenUser = new UserAuthenticationInfo(email, password);
 
-            LoginService.getInstance().login(authenUser);
+            LoginService.getInstance().login(authenUser).onSuccess(new PromiseRun<User>() {
+                @Override
+                public void run(String status, User result) {
+                    finish();
+                }
+            }).onFailed(new PromiseRun<User>() {
+                @Override
+                public void run(String status, User result) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Invalid username or password.", Toast.LENGTH_LONG).show();
+                            mEmailView.setError("Invalid username or password.");
+                            showProgress(false);
+                        }
+                    });
+                }
+            });
         }
     }
 

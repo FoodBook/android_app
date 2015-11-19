@@ -1,15 +1,27 @@
 apply plugin: 'com.android.application'
 
 android {
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
     dexOptions {
         preDexLibraries false
+        javaMaxHeapSize "4g"
     }
     signingConfigs {
         foodbook {
             keyPassword 'pea999'
             storePassword 'pea999'
             keyAlias 'foodbook'
-            storeFile file('D:/Documents/Github/android_app/data.keystore')
+            storeFile file('../data.keystore')
         }
     }
     compileSdkVersion 23
@@ -52,6 +64,8 @@ dependencies {
     compile 'com.android.support:design:23.1.0'
     compile 'com.github.clans:fab:1.6.1'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.android.gms:play-services-base:8.3.0'
+    compile 'com.google.android.gms:play-services-maps:8.3.0'
+    compile 'com.google.android.gms:play-services-location:8.3.0'
     compile 'com.isseiaoki:simplecropview:1.0.10'
 }

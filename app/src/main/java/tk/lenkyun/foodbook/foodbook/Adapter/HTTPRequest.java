@@ -38,7 +38,7 @@ public class HTTPRequest implements ConnectionRequest {
     }
 
     public String[] getServicePaths(){
-        return (String[]) mService.toArray();
+        return mService.toArray(new String[mService.size()]);
     }
 
     public HTTPRequest addServicePath(String serviceName){
@@ -48,6 +48,7 @@ public class HTTPRequest implements ConnectionRequest {
 
     private ArrayList<String> params = new ArrayList<>();
     @Override
+    @Deprecated
     public HTTPRequest addServiceParam(String name) {
         params.add(name);
         return this;
@@ -90,15 +91,7 @@ public class HTTPRequest implements ConnectionRequest {
 
     @Override
     public JSONObject getInputJSON(){
-        JSONObject jsonObject = new JSONObject();
-        for(Map.Entry<String, JSONObject> map : details.entrySet()){
-            try {
-                jsonObject.put(map.getKey(), map.getValue());
-            } catch (JSONException e) {
-            }
-        }
-
-        return jsonObject;
+        return details.get("data");
     }
 
     @Override
@@ -108,7 +101,7 @@ public class HTTPRequest implements ConnectionRequest {
 
     @Override
     public String[] getServiceParams() {
-        return (String[]) params.toArray();
+        return params.toArray(new String[params.size()]);
     }
 
     @Override

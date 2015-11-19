@@ -21,9 +21,9 @@ public class HTTPResult implements ConnectionResult {
     @Override
     public boolean isError() {
         try {
+            if(json.has("error") && json.getLong("error") != 0)
+                return true;
             if(json.has("status"))
-                return false;
-            else if(json.has("error") && json.getLong("error") == 0)
                 return true;
         } catch (JSONException ignored) {}
 

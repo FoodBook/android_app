@@ -8,6 +8,10 @@ public class SessionAuthenticationInfo extends AuthenticationInfo {
     private String token;
     private String userId;
 
+    public SessionAuthenticationInfo(){
+        super(AUTH_TYPE);
+    };
+
     public SessionAuthenticationInfo(String userId, String token) {
         super(AUTH_TYPE);
         this.token = token;

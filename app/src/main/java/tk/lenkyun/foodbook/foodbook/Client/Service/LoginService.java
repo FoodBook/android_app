@@ -74,6 +74,11 @@ public class LoginService {
                     promise.failed("login failed");
                 }
             }
+        }).onFailed(new PromiseRun<ConnectionResult>() {
+            @Override
+            public void run(String status, ConnectionResult result) {
+                promise.failed(status);
+            }
         });
 
         return promise;

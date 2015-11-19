@@ -58,11 +58,11 @@ public class HTTPAdapter implements ConnectionAdapter<HTTPRequest>{
                         builder.appendQueryParameter("token", requestDetail.getAuthenticationInfo().getInfo());
                     }
 
-                    if(!requestDetail.isSubmit()){
-                        for(Map.Entry<String, Object> entry : requestDetail.getInputMap().entrySet()){
-                            builder.appendQueryParameter(entry.getKey(), entry.getValue().toString());
-                        }
-                    }
+//                    if(!requestDetail.isSubmit()){
+//                        for(Map.Entry<String, Object> entry : requestDetail.getInputMap().entrySet()){
+//                            builder.appendQueryParameter(entry.getKey(), entry.getValue().toString());
+//                        }
+//                    }
 
                     url = new URL(builder.build().toString());
 

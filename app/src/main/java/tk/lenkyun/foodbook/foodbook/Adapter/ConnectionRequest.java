@@ -19,6 +19,7 @@ public interface ConnectionRequest {
     Map<String, Object> getInputMap();
 
     ConnectionRequest addServicePath(String serviceName);
+    @Deprecated
     ConnectionRequest addServiceParam(String name);
     ConnectionRequest setDataInputParam(Object detail);
     ConnectionRequest addInputParam(String name, Object detail);
