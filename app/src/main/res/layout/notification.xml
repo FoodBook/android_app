@@ -15,7 +15,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+            android:src="@drawable/anonymous" />
 
         <TextView
             android:layout_width="wrap_content"
