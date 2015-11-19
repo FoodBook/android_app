@@ -44,15 +44,30 @@
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="121dp"
                 android:padding="10dp"
                 >
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayout5">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src = "@drawable/ic_location_on_black_24dp" />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:id = "@+id/placeName"/>
+                </LinearLayout>
 
                 <RatingBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ratingBar2"
-                    style="?android:attr/ratingBarStyleSmall" />
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_below="@+id/linearLayout5"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
                 <TextView
                     android:id="@+id/caption"
@@ -70,6 +85,31 @@
                     android:textColor="#55000000"
                     android:textStyle="bold"
                     android:layout_height="20dp" />
+                <TableRow android:layout_height="wrap_content"
+                    android:layout_width="wrap_content">
+
+                </TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="COMMENT"
+                    android:textColor="@color/colorPrimary"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/textView9" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SHARE"
+                    android:textColor="@color/colorPrimary"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/textView9"
+                    android:layout_toEndOf="@+id/textView9" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
