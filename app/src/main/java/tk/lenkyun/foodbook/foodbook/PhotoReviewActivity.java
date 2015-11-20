@@ -1,5 +1,6 @@
 package tk.lenkyun.foodbook.foodbook;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -30,11 +31,12 @@ public class PhotoReviewActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_photo_review);
 
-        final PhotoContent photo = null;
         FoodPost foodPost = null;
+        Bitmap photo = null;
 
         try {
             foodPost = (FoodPost) Repository.getInstance().getData("post");
+            photo = (Bitmap) Repository.getInstance().getData("photo");
         } catch (ClassCastException e) {
             finish();
             return;
@@ -46,6 +48,11 @@ public class PhotoReviewActivity extends AppCompatActivity {
         }
 
         SquareImageView imageView = (SquareImageView)findViewById(R.id.reveiw_imageview);
+
+        if(photo == null){
+            imageView.setImageBitmap(photo);
+        }
+
         PhotoContentService.getInstance().getPhotoContent(
                 foodPost.getPostDetail().getPhoto(0),
                 imageView

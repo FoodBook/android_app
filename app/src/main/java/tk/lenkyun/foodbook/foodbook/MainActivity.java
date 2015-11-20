@@ -397,6 +397,13 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     Repository.getInstance().setData("user", owner);
+
+                    if(holder.profilePhoto.getDrawable() != null)
+                        Repository.getInstance().setData("photo",
+                                ((BitmapDrawable)holder.profilePhoto.getDrawable()).getBitmap());
+                    else
+                        Repository.getInstance().setData("photo", null);
+
                     Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
                     startActivity(intent);
                 }
@@ -413,6 +420,13 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), PhotoReviewActivity.class);
                     Repository.getInstance().setData("post", foodPost);
+
+                    if(holder.profilePhoto.getDrawable() != null)
+                        Repository.getInstance().setData("photo",
+                                ((BitmapDrawable)holder.profilePhoto.getDrawable()).getBitmap());
+                    else
+                        Repository.getInstance().setData("photo", null);
+
                     startActivity(intent);
                 }
             });

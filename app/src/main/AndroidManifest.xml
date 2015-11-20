@@ -78,6 +78,9 @@
         <activity
             android:name=".PhotoReviewActivity"
             android:label="@string/title_activity_photo_review" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.lenkyun.foodbook.foodbook.MainActivity" />
         </activity>
         <activity
             android:name=".PickLocationActivity"
