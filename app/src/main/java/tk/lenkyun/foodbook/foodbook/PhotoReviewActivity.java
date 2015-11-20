@@ -67,7 +67,7 @@ public class PhotoReviewActivity extends AppCompatActivity {
         caption.setText(foodPost.getPostDetail().getCaption());
 
         TextView date = (TextView) findViewById(R.id.date);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("DD m YY H:i:s");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
         date.setText(dateFormat.format(foodPost.getPostDetail().getCreatedDate()));
     }
 
