@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Service.PhotoContentService;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
@@ -65,7 +67,8 @@ public class PhotoReviewActivity extends AppCompatActivity {
         caption.setText(foodPost.getPostDetail().getCaption());
 
         TextView date = (TextView) findViewById(R.id.date);
-        date.setText(foodPost.getPostDetail().getCreatedDate().toString());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("DD m YY H:i:s");
+        date.setText(dateFormat.format(foodPost.getPostDetail().getCreatedDate()));
     }
 
 }
