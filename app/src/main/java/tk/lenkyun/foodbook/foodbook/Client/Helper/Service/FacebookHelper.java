@@ -82,7 +82,12 @@ public class FacebookHelper {
                             SessionAuthenticationInfo.class
                     ));
 
-                    LoginService.getInstance().getUser().bind(userPromise);
+                    LoginService.getInstance().getUser().onSuccess(new PromiseRun<User>() {
+                        @Override
+                        public void run(String status, User result) {
+                            userPromise.success(result);
+                        }
+                    });
                 }
             }
         });

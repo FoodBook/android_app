@@ -408,6 +408,15 @@ public class MainActivity extends AppCompatActivity
             ));
             holder.caption.setText(foodPost.getPostDetail().getCaption());
 
+            holder.feedPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), PhotoReviewActivity.class);
+                    Repository.getInstance().setData("post", foodPost);
+                    startActivity(intent);
+                }
+            });
+
             PhotoContentService.getInstance().getPhotoContent(
                     foodPost.getPostDetail().getPhoto(0))
                     .onSuccess(new PromiseRun<Bitmap>() {
@@ -417,14 +426,6 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void run() {
                                     holder.feedPhoto.setImageBitmap(result);
-                                    holder.feedPhoto.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Intent intent = new Intent(getApplicationContext(), PhotoReviewActivity.class);
-                                            intent.putExtra("review", foodPost.getPostDetail().getPhoto(0).getReferal().toString());
-                                            startActivity(intent);
-                                        }
-                                    });
                                 }
                             });
                         }

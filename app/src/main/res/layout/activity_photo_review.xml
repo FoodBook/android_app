@@ -21,13 +21,12 @@
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         android:fillViewport="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:orientation="vertical"
             >
             <android.support.v7.widget.CardView
@@ -46,13 +45,13 @@
                         android:weightSum="1">
                         <LinearLayout
                             android:id="@+id/review_imageview_layout"
-                            android:layout_width="fill_parent"
-                            android:layout_height="190dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:background="#000"
                             android:orientation="horizontal">
-                            <ImageView
+                            <tk.lenkyun.foodbook.foodbook.View.SquareImageView
                                 android:id="@+id/reveiw_imageview"
-                                android:layout_width="fill_parent"
+                                android:layout_width="match_parent"
                                 android:layout_height="fill_parent" />
                         </LinearLayout>
                         <LinearLayout

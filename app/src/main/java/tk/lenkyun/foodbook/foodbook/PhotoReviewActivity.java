@@ -5,11 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
+import tk.lenkyun.foodbook.foodbook.Client.Service.PhotoContentService;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.FoodPost;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
+import tk.lenkyun.foodbook.foodbook.View.SquareImageView;
 
 public class PhotoReviewActivity extends AppCompatActivity {
 
@@ -27,31 +30,35 @@ public class PhotoReviewActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_photo_review);
 
-        final PhotoContent photo;
-        final FoodPost foodPost;
+        final PhotoContent photo = null;
+        FoodPost foodPost = null;
+
         try {
-            photo = (PhotoContent) Repository.getInstance().getData("review");
-            foodPost = (FoodPost) Repository.getInstance().getData("foodpost");
+            foodPost = (FoodPost) Repository.getInstance().getData("post");
         } catch (ClassCastException e) {
             finish();
             return;
         }
 
-        if (photo == null) {
+        if(foodPost == null){
             finish();
             return;
         }
 
-        ImageView imageView = (ImageView)findViewById(R.id.reveiw_imageview);
-        imageView.setImageBitmap(photo.getContent());
-        //RatingBar ratingBar = (RatingBar)findViewById(R.id.ratingBar);
-        //ratingBar.setRating();
+        SquareImageView imageView = (SquareImageView)findViewById(R.id.reveiw_imageview);
+        PhotoContentService.getInstance().getPhotoContent(
+                foodPost.getPostDetail().getPhoto(0),
+                imageView
+        );
+
+        RatingBar ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        ratingBar.setRating(foodPost.getAverageRate());
+
         TextView caption = (TextView) findViewById(R.id.review_caption);
-        caption.setText(foodPost.getPostDetail().getCaption().toString());
+        caption.setText(foodPost.getPostDetail().getCaption());
 
-        EditText date = (EditText) findViewById(R.id.date);
+        TextView date = (TextView) findViewById(R.id.date);
         date.setText(foodPost.getPostDetail().getCreatedDate().toString());
-
     }
 
 }
