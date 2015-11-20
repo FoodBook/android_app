@@ -119,7 +119,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                         this.stopTracking();
-                        showProgress(true);
                         Profile.setCurrentProfile(currentProfile);
                         FacebookHelper.getInstance().login()
                                 .onSuccess(new PromiseRun<User>() {
@@ -149,25 +148,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 };
 
                 if(Profile.getCurrentProfile() != null){
+                    showProgress(true);
                     FacebookHelper.getInstance().login()
-                            .onSuccess(new PromiseRun<User>() {
-                                @Override
-                                public void run(String status, User result) {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            showProgress(false);
-                                            finish();
-                                        }
-                                    });
-                                }
+                                .onSuccess(new PromiseRun<User>() {
+                                    @Override
+                                    public void run(String status, User result) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                showProgress(false);
+                                                finish();
+                                            }
+                                        });
+                                    }
                             })
                             .onFailed(new PromiseRun<User>() {
                                 @Override
-                                public void run(String status, User result) {
+                                public void run(final String status, User result) {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_LONG).show();
                                             showProgress(false);
                                         }
                                     });
