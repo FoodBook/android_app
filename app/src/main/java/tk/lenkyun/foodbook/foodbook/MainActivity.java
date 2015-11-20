@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
     private LoginListener loginListener = new LoginListener() {
         @Override
         public void onLoginSuccess(LoginService loginService, User user) {
-            updateProfileUI();
+            //updateProfileUI();
         }
 
         @Override
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity
         FacebookSdk.sdkInitialize(getApplicationContext());
         PhotoContentService.initialize(getApplicationContext());
 
+        // Create global configuration and initialize ImageLoader with this config
         uiCheckLogin();
 
         setContentView(R.layout.activity_main);
@@ -120,10 +121,15 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
         initCamera();
         initGallery();
 
         initNewsFeed();
+
+        profile = (ImageView) findViewById(R.id.profile_picture);
+        profileCover = (LinearLayout) findViewById(R.id.cover_layout);
+        userFullname = (TextView) findViewById(R.id.user_fullname);
     }
 
     private void initGallery() {
@@ -247,7 +253,11 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_edit_account){
             Intent intent = new Intent(getApplicationContext(), EditProfilePopupActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, EditProfilePopupActivity.INTENT_ID);
+        }
+        if (id == R.id.nav_logout){
+            LoginService.getInstance().logout();
+            uiCheckLogin();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -260,6 +270,10 @@ public class MainActivity extends AppCompatActivity
         cameraHelper.onActivityResult(requestCode, resultCode, data);
         galleryHelper.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case EditProfilePopupActivity.INTENT_ID:
+                updateProfileUI();
+                updateNewsFeed();
+                break;
             case LoginActivity.INTENT_ID:
                 updateProfileUI();
                 updateNewsFeed();
@@ -289,9 +303,12 @@ public class MainActivity extends AppCompatActivity
                 }
         );
     }
+
+    private ImageView profile = null;
+    private LinearLayout profileCover = null;
+    private TextView userFullname = null;
+
     private void updateProfileUI2(User user){
-        final ImageView profile = (ImageView) findViewById(R.id.profile_picture);
-        final LinearLayout profileCover = (LinearLayout) findViewById(R.id.cover_layout);
         final Profile userProfile = user.getProfile();
         final PhotoItem profilePicture = userProfile.getProfilePicture();
 
@@ -299,63 +316,35 @@ public class MainActivity extends AppCompatActivity
 
         PhotoContentService.getInstance().getPhotoContent(
                 userProfile.getProfilePicture(),
-                new ContentListener<Bitmap>() {
-                    @Override
-                    public void onContentLoaded(Content<Bitmap> content) {
-                        final Bitmap contentIn = content.getContent();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                profile.setImageBitmap(
-                                        Bitmap.createScaledBitmap(contentIn,
-                                                getResources().getInteger(R.integer.profile_width),
-                                                getResources().getInteger(R.integer.profile_height), false));
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onContentFailed(String errorDetail) {
-                    }
-                }
+                profile
         );
 
-        if (userProfile.getCoverPicture() != null)
+        if (userProfile.getCoverPicture() != null && userProfile.getCoverPicture().getReferal() != null)
+
             PhotoContentService.getInstance().getPhotoContent(
-                    userProfile.getCoverPicture(),
-                    new ContentListener<Bitmap>() {
+                    userProfile.getCoverPicture())
+                    .onSuccess(new PromiseRun<Bitmap>() {
                         @Override
-                        public void onContentLoaded(Content<Bitmap> content) {
-                            final Bitmap contentIn = content.getContent();
+                        public void run(String status, final Bitmap result) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Bitmap scaled = Bitmap.createScaledBitmap(contentIn,
+                                    Bitmap scaled = Bitmap.createScaledBitmap(result,
                                             200, 100, false);
                                     Canvas canvas = new Canvas(scaled);
                                     Paint paint = new Paint();
                                     paint.setARGB(150, 0, 0, 0);
                                     canvas.drawRect(0, 0, 200, 100, paint);
 
-                                    profileCover.setBackgroundDrawable(new BitmapDrawable(scaled));
+                                    profileCover.setBackgroundDrawable(new BitmapDrawable(getResources(), scaled));
                                 }
                             });
                         }
+                    });
 
-                        @Override
-                        public void onContentFailed(String errorDetail) {
-
-                        }
-                    }
-            );
-
-        TextView userFullname = (TextView) findViewById(R.id.user_fullname);
-        userFullname.setText(String.format(getResources().getString(R.string.profile_name_display),
-                userProfile.getFirstname(), userProfile.getLastname()
-        ));
-        TextView userUsername = (TextView) findViewById(R.id.user_username);
-        userUsername.setText(user.getUsername());
-
+        if(userFullname != null)
+            userFullname.setText(String.format(getResources().getString(R.string.profile_name_display),
+                userProfile.getFirstname()));
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -400,22 +389,24 @@ public class MainActivity extends AppCompatActivity
             final User owner = foodPost.getOwner();
             final Profile ownerProfile = owner.getProfile();
 
+            holder.feedPhoto.setImageResource(0);
+            holder.profilePhoto.setImageResource(0);
+
             holder.profileName.setText(String.format(
                     getResources().getString(R.string.profile_name_display),
-                    ownerProfile.getFirstname(),
-                    ownerProfile.getLastname()
+                    ownerProfile.getFirstname()
             ));
             holder.caption.setText(foodPost.getPostDetail().getCaption());
 
             PhotoContentService.getInstance().getPhotoContent(
-                    foodPost.getPostDetail().getPhoto(0),
-                    new ContentListener<Bitmap>() {
+                    foodPost.getPostDetail().getPhoto(0))
+                    .onSuccess(new PromiseRun<Bitmap>() {
                         @Override
-                        public void onContentLoaded(final Content<Bitmap> content) {
+                        public void run(String status, final Bitmap result) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    holder.feedPhoto.setImageBitmap(content.getContent());
+                                    holder.feedPhoto.setImageBitmap(result);
                                     holder.feedPhoto.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -427,31 +418,21 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
                         }
-
-                        @Override
-                        public void onContentFailed(String errorDetail) {
-                        }
-                    }
-            );
+                    });
 
             PhotoContentService.getInstance().getPhotoContent(
-                    ownerProfile.getProfilePicture(),
-                    new ContentListener<Bitmap>() {
+                    ownerProfile.getProfilePicture())
+                    .onSuccess(new PromiseRun<Bitmap>() {
                         @Override
-                        public void onContentLoaded(final Content<Bitmap> content) {
+                        public void run(String status, final Bitmap result) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    holder.profilePhoto.setImageBitmap(content.getContent());
+                                    holder.profilePhoto.setImageBitmap(result);
                                 }
                             });
                         }
-
-                        @Override
-                        public void onContentFailed(String errorDetail) {
-                        }
-                    }
-            );
+                    });
         }
 
         @Override

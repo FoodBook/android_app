@@ -1,7 +1,10 @@
 package tk.lenkyun.foodbook.foodbook;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +48,8 @@ public class PhotoUploadActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private float mRatio = 1;
     private int mRotation = LANDSCAPE;
+    private LinearLayout mOverall;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,41 @@ public class PhotoUploadActivity extends AppCompatActivity {
 
         initSubmit();
         initPlacePicker();
+
+        mOverall = (LinearLayout) findViewById(R.id.overall);
+        mProgressBar = (ProgressBar) findViewById(R.id.progress);
+    }
+
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mOverall.setVisibility(show ? View.GONE : View.VISIBLE);
+            mOverall.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mOverall.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressBar.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            mOverall.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void initSubmit() {
@@ -77,6 +118,7 @@ public class PhotoUploadActivity extends AppCompatActivity {
 //                            return;
 //                        }
 
+                        showProgress(true);
                         CropImageView cropImageView = (CropImageView) findViewById(R.id.upload_imageview);
                         PhotoBundle photoBundle = new PhotoBundle(
                                 new PhotoContent(cropImageView.getCroppedBitmap())

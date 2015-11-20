@@ -28,11 +28,18 @@ public class Promise<E> {
     }
 
     public void failed(String status){
+        alreadyFailed = true;
         if(failedRun != null)
             failedRun.run(status, null);
     }
 
+    public void success(E obj){
+        success("", obj);
+    }
+
     public void success(String status, E obj){
+        alreadySuccess = true;
+        this.obj = obj;
         if(successRun != null)
             successRun.run(status, obj);
     }

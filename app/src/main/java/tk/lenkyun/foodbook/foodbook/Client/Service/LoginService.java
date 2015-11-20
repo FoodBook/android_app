@@ -113,6 +113,7 @@ public class LoginService {
                 if(result.isError())
                     promise.failed(status);
                 else {
+                    user = result.getResult(User.class);
                     promise.success("success", result.getResult(User.class));
                 }
             }
@@ -179,6 +180,30 @@ public class LoginService {
 
     public void removeLoginListener(Class key) {
         this.loginListeners.remove(key);
+    }
+
+    public Promise<User> updateUserProfile(String name) {
+        final Promise<User> userPromise = new Promise<>();
+        user.getProfile().setFirstname(name);
+
+        mConnectionAdapter.createRequest()
+                .addServicePath("user").addServicePath("me")
+                .addAuthentication(getSession())
+                .setSubmit(true)
+                .setDataInputParam(user)
+                .execute()
+                .onSuccess(new PromiseRun<ConnectionResult>() {
+                    @Override
+                    public void run(String status, ConnectionResult result) {
+                        if (!result.isError()) {
+                            user = result.getResult(User.class);
+                            userPromise.success(result.getResult(User.class));
+                        } else
+                            userPromise.failed(result.getStatusDetail());
+                    }
+                }).bindOnFailed(userPromise);
+
+        return userPromise;
     }
 
     private class LoginListenerList extends LRUMap<Class, LoginListener> {

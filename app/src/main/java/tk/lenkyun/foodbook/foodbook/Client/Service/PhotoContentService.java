@@ -2,22 +2,21 @@ package tk.lenkyun.foodbook.foodbook.Client.Service;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import org.apache.commons.collections4.map.LRUMap;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
 import tk.lenkyun.foodbook.foodbook.Client.Utils.PhotoContentCache;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoContent;
 import tk.lenkyun.foodbook.foodbook.Domain.Data.Photo.PhotoItem;
+import tk.lenkyun.foodbook.foodbook.Promise.Promise;
 
 /**
  * Created by lenkyun on 15/10/2558.
@@ -28,10 +27,11 @@ public class PhotoContentService {
     private static Object lock = new Object();
     PhotoContentCache cache;
     private int mockKey = 0;
-    private Map<String, PhotoContent> mockPhotoServer = new LRUMap<>();
+    private Context context;
 
     public PhotoContentService(Context context) {
         cache = new PhotoContentCache(context, 5, 120, 5, 30);
+        this.context = context;
     }
 
     public static void initialize(Context context) {
@@ -60,44 +60,48 @@ public class PhotoContentService {
     public PhotoItem mockAddPhoto(PhotoContent photoContent) {
         String uriPath = "foodbook://photo/" + mockKey++ + ".jpg";
         Bitmap content = photoContent.getContent();
-        mockPhotoServer.put(uriPath, photoContent);
         return new PhotoItem(Uri.parse(uriPath), content.getWidth(), content.getHeight());
     }
 
-    public void getPhotoContent(final PhotoItem photoItem, final ContentListener<Bitmap> contentListener){
-        Bitmap bmp = cache.get(photoItem);
-        if (bmp != null) {
-            contentListener.onContentLoaded(new PhotoContent(bmp));
+    public void getPhotoContent(final PhotoItem photoItem, ImageView imageView){
+        if(photoItem.getReferal() == null || imageView == null)
             return;
-        }
 
-        // For mock server
-        if (mockPhotoServer.get(photoItem.getReferal().toString()) != null) {
-            contentListener.onContentLoaded(mockPhotoServer.get(photoItem.getReferal().toString()));
-            return;
-        }
+        Glide.with(context)
+                .load(photoItem.getReferal())
+                .centerCrop()
+                .into(imageView);
+    }
 
-        new AsyncTask<String, Integer, String>() {
-            @Override
-            protected String doInBackground(String... params) {
-                try {
-                    URL url = new URL(photoItem.getReferal().toString());
-                    Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+    public Promise<Bitmap> getPhotoContent(final PhotoItem photoItem){
+        return getPhotoContent(photoItem, 800, 800);
+    }
 
-                    PhotoContent contentPhoto = new PhotoContent(bitmap);
+    public Promise<Bitmap> getPhotoContent(final PhotoItem photoItem, final int width, final int height){
+        final Promise<Bitmap> bitmapPromise = new Promise<>();
 
-                    cache.put(photoItem, bitmap);
-                    contentListener.onContentLoaded(contentPhoto);
-                } catch (MalformedURLException e) {
-                    contentListener.onContentFailed("PhotoItem loading error.");
-                    Log.e("PhotoContent", "PhotoItem failed open connection.");
-                } catch (IOException e) {
-                    contentListener.onContentFailed("PhotoItem failed open connection.");
-                    Log.e("PhotoContent", "PhotoItem failed open connection.");
+        if(photoItem != null)
+            new AsyncTask<String, String, String>(){
+
+                @Override
+                protected String doInBackground(String... params) {
+                    try {
+                        Bitmap bmp = Glide.with(context)
+                                .load(photoItem.getReferal())
+                                .asBitmap()
+                                .into(width, height)
+                                .get();
+
+                        bitmapPromise.success(bmp);
+                    } catch (InterruptedException e) {
+                        bitmapPromise.failed(e.getMessage());
+                    } catch (ExecutionException e) {
+                        bitmapPromise.failed(e.getMessage());
+                    }
+                    return null;
                 }
+            }.execute();
 
-                return null;
-            }
-        }.execute();
+        return bitmapPromise;
     }
 }

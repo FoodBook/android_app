@@ -16,27 +16,32 @@
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp">
-                <ImageView
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                >
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_picture"
-                    android:layout_margin="5dp"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp" />
-                <LinearLayout
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    />
+                <RelativeLayout
                     android:layout_toRightOf="@id/profile_picture"
+                    android:layout_toEndOf="@+id/profile_picture"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/profile_name"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="20dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_centerVertical="true"
                         />
-                </LinearLayout>
+                </RelativeLayout>
             </RelativeLayout>
-            <ImageView
+            <tk.lenkyun.foodbook.foodbook.View.SquareImageView
                 android:id="@+id/foodbook_pic"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -45,21 +50,23 @@
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="121dp"
+                android:layout_height="wrap_content"
                 android:padding="10dp"
                 >
                 <LinearLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/linearLayout5">
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    android:id="@+id/linearLayout5"
+                    android:layout_height="wrap_content">
+                    <tk.lenkyun.foodbook.foodbook.View.SquareImageView
+                        android:layout_width="20dp"
                         android:layout_height="wrap_content"
                         android:src = "@drawable/ic_location_on_black_24dp" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingLeft="8dp"
+                        android:text="No location"
                         android:paddingTop="3dp"
+                        android:textColor="@android:color/darker_gray"
                         android:id = "@+id/placeName" />
                 </LinearLayout>
 
@@ -69,8 +76,8 @@
                     android:id="@+id/ratingBar2"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_below="@+id/linearLayout5"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
                 <TextView
                     android:id="@+id/tag"
                     android:textStyle="bold"
@@ -79,55 +86,63 @@
                     android:textColor="#00AAFF"
                     android:layout_below="@+id/ratingBar2"
                     android:layout_centerHorizontal="true"
-                    android:padding="4dp"/>
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="32dp"
+                    android:text="tags:"
+                    />
                 <TextView
                     android:id="@+id/caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#444"
-                    android:maxLines="4"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_below="@id/tag"
+                    />
                 <TextView
                     android:id="@+id/date"
                     android:layout_below="@id/caption"
                     android:layout_width="wrap_content"
-                    android:layout_alignRight="@id/caption"
                     android:textColor="#55000000"
                     android:textStyle="bold"
                     android:layout_height="20dp" />
-
-
-            </RelativeLayout>
-
-            <TableRow android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_alignBottom="@+id/caption"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
-                <TextView
+                <LinearLayout
+                    android:layout_height="36dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="COMMENT"
-                    android:textColor="@color/colorPrimary"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignBottom="@+id/caption"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:id="@+id/textView9" />
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@id/tag"
+                    >
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="COMMENT"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@android:color/transparent"
+                        android:padding="@dimen/activity_horizontal_margin"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/textView9" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SHARE"
-                    android:textColor="@color/colorPrimary"
-                    android:padding="@dimen/activity_horizontal_margin"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toRightOf="@+id/textView9"
-                    android:layout_toEndOf="@+id/textView9" />
-            </TableRow>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SHARE"
+                        android:textColor="@color/colorPrimary"
+                        android:background="@android:color/transparent"
+                        android:padding="@dimen/activity_horizontal_margin"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@+id/textView9"
+                        android:layout_toEndOf="@+id/textView9" />
+                </LinearLayout>
+            </RelativeLayout>
+
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

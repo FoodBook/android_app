@@ -8,7 +8,7 @@ import tk.lenkyun.foodbook.foodbook.Domain.Data.User.User;
 /**
  * Created by lenkyun on 16/10/2558.
  */
-public class FoodPost implements FoodbookType {
+public class FoodPost implements FoodbookType, Comparable<FoodPost> {
     private String id;
     private List<Comment> commentList = new LinkedList<>();
     private FoodPostDetail postDetail;
@@ -61,5 +61,12 @@ public class FoodPost implements FoodbookType {
 
     public void setAverageRate(float averageRate) {
         this.averageRate = averageRate;
+    }
+
+    @Override
+    public int compareTo(FoodPost another) {
+        if(another == null)
+            return 1;
+        return (int) (another.getPostDetail().getCreatedDate().getTime() - this.getPostDetail().getCreatedDate().getTime());
     }
 }

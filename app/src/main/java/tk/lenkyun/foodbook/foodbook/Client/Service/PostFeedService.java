@@ -3,6 +3,8 @@ package tk.lenkyun.foodbook.foodbook.Client.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,6 +126,7 @@ public class PostFeedService {
                     newsFeedPromise.failed(result.getStatusDetail());
                 }else{
                     FoodPost[] foodPosts = result.getResult(FoodPost[].class);
+                    Arrays.sort(foodPosts);
                     NewsFeed newsFeed = new NewsFeed(UUID.randomUUID().toString());
 
                     for(FoodPost foodPost : foodPosts){
