@@ -69,7 +69,7 @@ public class FacebookHelper {
 
         Promise<ConnectionResult> result = request.addServicePath("oauth").addServicePath("login").addServicePath("facebook")
             .setSubmit(true)
-            .setDataInputParam(new FacebookAuthenticationInfo(null, AccessToken.getCurrentAccessToken().toString()))
+            .setDataInputParam(new FacebookAuthenticationInfo(null, AccessToken.getCurrentAccessToken().getToken()))
             .execute();
 
         result.onSuccess(new PromiseRun<ConnectionResult>() {

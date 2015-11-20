@@ -33,6 +33,7 @@ import tk.lenkyun.foodbook.foodbook.Client.Data.Photo.PhotoItemParcelable;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.CameraHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.GalleryHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Interface.Listener.ObjectListener;
+import tk.lenkyun.foodbook.foodbook.Client.Helper.Repository;
 import tk.lenkyun.foodbook.foodbook.Client.Helper.Service.FacebookHelper;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Exception.LoginException;
 import tk.lenkyun.foodbook.foodbook.Client.Service.Listener.ContentListener;
@@ -391,6 +392,15 @@ public class MainActivity extends AppCompatActivity
 
             holder.feedPhoto.setImageResource(0);
             holder.profilePhoto.setImageResource(0);
+
+            holder.profilePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Repository.getInstance().setData("user", owner);
+                    Intent intent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             holder.profileName.setText(String.format(
                     getResources().getString(R.string.profile_name_display),

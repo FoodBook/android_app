@@ -91,7 +91,10 @@
         <activity android:name=".EditProfilePopupActivity"
             android:theme="@style/AppTheme.Transparent"
             ></activity>
-        <activity android:name=".commentActivity" >
+        <activity android:name=".UserInfoActivity"
+            android:theme="@style/AppTheme.Transparent"
+            ></activity>
+        <activity android:name=".CommentActivity" >
         </activity>
     </application>
 

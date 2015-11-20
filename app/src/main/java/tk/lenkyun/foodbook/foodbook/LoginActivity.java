@@ -119,6 +119,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                         this.stopTracking();
+                        showProgress(true);
                         Profile.setCurrentProfile(currentProfile);
                         FacebookHelper.getInstance().login()
                                 .onSuccess(new PromiseRun<User>() {
@@ -128,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                             @Override
                                             public void run() {
                                                 showProgress(false);
+                                                finish();
                                             }
                                         });
                                     }
@@ -138,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                // run register
+                                                showProgress(false);
                                             }
                                         });
                                     }

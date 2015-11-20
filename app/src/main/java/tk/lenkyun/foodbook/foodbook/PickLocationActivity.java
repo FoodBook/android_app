@@ -18,8 +18,7 @@ public class PickLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_pick_location);
-
-
+        TextView textView = (TextView) findViewById(R.id.search_location);
     }
 
     private void initLocationList(){

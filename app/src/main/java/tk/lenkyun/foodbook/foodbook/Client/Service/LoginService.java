@@ -153,12 +153,7 @@ public class LoginService {
      * @param session current session (no User required)
      */
     public synchronized void updateSession(SessionAuthenticationInfo session) {
-        // TODO : implement real
-        if (userSession.getId().equals(DebugInfo.UID) &&
-                userSession.getInfo().equals(DebugInfo.TOKEN)) {
-            this.userSession = session;
-            this.updateSession();
-        }
+        this.userSession = session;
     }
 
     /**
